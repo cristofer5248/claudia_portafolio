@@ -11,6 +11,25 @@ body {
   font-weight: 300;
   background-color: black;
   }
+  @font-face {
+    font-family: myFirstFont;
+    src: url(../fonts/MontserratAlternates-Black.otf) format("opentype");;
+ }
+ #subtitle {
+   color: white;
+   margin-left: 15%;
+   margin-top: 199px;
+   text-align:center;
+   margin-right: 600px;
+   
+  }
+  #subtitle2{
+    font-size: 20px;
+    padding-left: 33%;
+    margin-right: 488px;
+    text-align: center;
+
+  }
 
 h1,
 h2,
@@ -76,10 +95,12 @@ section {
 
 .navbar-brand {
   font-size: 40px;
+
   color: #000; }
 
 .navbar-nav .nav-link {
   color: #fff;
+  
   transition: .3s ease; }
 
 .navbar-nav:hover li a {
@@ -130,9 +151,10 @@ section {
     line-height: .9;
     font-weight: bold;
     display: inline-block;
-    border: 15px solid #fff;
+    /*border: 15px solid #fff;*/
     padding: 30px;
-    font-size: 9rem;
+    text-align: center;
+    font-size: 4rem;
     opacity: 0;
     animation: 1s fadeInFromTop cubic-bezier(0.785, 0.135, 0.15, 0.86) 1s forwards;
     animation-delay: .8s; }
@@ -581,6 +603,13 @@ section {
 .sidenav a:hover {
   color: #f1f1f1; }
 
+.own-ul,
+  li {
+    padding: 8px 20px;
+    border-right: 1px solid white;
+    font-family: myFirstFont;
+  }
+
 .sidenav #side-nav-close,
 .sidenav #side-search-close {
   position: absolute;
@@ -762,3 +791,5 @@ section {
     font-size: 16px; } }
 
 /*=====  End of RESPONSIVE  ======*/
+
+
