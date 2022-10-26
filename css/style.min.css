@@ -821,6 +821,17 @@ section {
   margin: 10%;
 }
   }
+
+.contactamediv a{
+  color:white;
+  /* font-family: myFirstFont; */
+  }
+
+.contactamediv p{
+    color:white;
+    font-family: myFirstFont;
+    font-size: 1.7em;
+  }
 /*=====  End of RESPONSIVE  ======*/
 
 
