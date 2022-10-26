@@ -13,7 +13,7 @@ body {
   }
   @font-face {
     font-family: myFirstFont;
-    src: url(../fonts/MontserratAlternates-Black.otf) format("opentype");;
+    src: url(../fonts/Montserrat-Regular.otf) format("opentype");;
  }
   #subtitle {
    color: white;
@@ -23,13 +23,11 @@ body {
    margin-right: 600px;
    
   }
-  /* #subtitle2{
+   #subtitle2{
     font-size: 20px;
-    padding-left: 33%;
-    margin-right: 488px;
-    text-align: center;
+  
 
-  }  */
+  }  
   .video-container {
     position: relative;
     padding-bottom: calc(56.25% * 0.75); /* 16:9 */
