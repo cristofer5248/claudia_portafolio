@@ -15,7 +15,7 @@ body {
     font-family: myFirstFont;
     src: url(../fonts/MontserratAlternates-Black.otf) format("opentype");;
  }
- /* #subtitle {
+  #subtitle {
    color: white;
    margin-left: 15%;
    margin-top: 199px;
@@ -23,13 +23,13 @@ body {
    margin-right: 600px;
    
   }
-  #subtitle2{
+  /* #subtitle2{
     font-size: 20px;
     padding-left: 33%;
     margin-right: 488px;
     text-align: center;
 
-  } */
+  }  */
   .video-container {
     position: relative;
     padding-bottom: calc(56.25% * 0.75); /* 16:9 */
@@ -812,10 +812,14 @@ section {
     padding: 33px;
   }
    
-   .iframe{
+.iframe{
      width: 460;
      height: 215;
    }
+#subtitle{
+  
+  margin: 10%;
+}
   }
 /*=====  End of RESPONSIVE  ======*/
 
