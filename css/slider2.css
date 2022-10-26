@@ -6,7 +6,7 @@ body {
 }
 
 
-#slider {
+#slider2 {
   position: relative;
   width: 50%;
   height: 30vw;
@@ -40,7 +40,7 @@ input[type=radio]:checked {
 
 
 
-#slider label {
+#slider2 label {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -57,56 +57,56 @@ input[type=radio]:checked {
   transition: transform 400ms ease;
 }
 
-#slide1 {
+#cslide1 {
   background: tomato;
 }
 
-#slide2 {
+#cslide2 {
   background: yellowgreen;
 }
 
-#slide3 {
+#cslide3 {
   background: dodgerblue;
 }
 
-#slide4 {
+#cslide4 {
   background: slateblue;
 }
 
-#slide5 {
+#cslide5 {
   background: violet;
 }
 
 
-/* Slider Functionality */
+/* slider2 Functionality */
 
 /* Active Slide */
-#s1:checked ~ #slide1, #s2:checked ~ #slide2, #s3:checked ~ #slide3, #s4:checked ~ #slide4, #s5:checked ~ #slide5 {
+#c1:checked ~ #cslide1, #c2:checked ~ #cslide2, #c3:checked ~ #cslide3, #c4:checked ~ #cslide4, #c5:checked ~ #cslide5 {
   box-shadow: 0 13px 26px rgba(0,0,0, 0.3), 0 12px 6px rgba(0,0,0, 0.2);
   transform: translate3d(0%, 0, 0px);
 }
 
 /* Next Slide */
-#s1:checked ~ #slide2, #s2:checked ~ #slide3, #s3:checked ~ #slide4, #s4:checked ~ #slide5, #s5:checked ~ #slide1 {
+#c1:checked ~ #cslide2, #c2:checked ~ #cslide3, #c3:checked ~ #cslide4, #c4:checked ~ #cslide5, #c5:checked ~ #cslide1 {
   box-shadow: 0 6px 10px rgba(0,0,0, 0.3), 0 2px 2px rgba(0,0,0, 0.2);
   transform: translate3d(15%, 0, -100px);
 }
 
 
 /* Next to Next Slide */
-#s1:checked ~ #slide3, #s2:checked ~ #slide4, #s3:checked ~ #slide5, #s4:checked ~ #slide1, #s5:checked ~ #slide2 {
+#c1:checked ~ #cslide3, #c2:checked ~ #cslide4, #c3:checked ~ #cslide5, #c4:checked ~ #cslide1, #c5:checked ~ #cslide2 {
   box-shadow: 0 1px 4px rgba(0,0,0, 0.4);
   transform: translate3d(30%, 0, -250px);
 }
 
 /* Previous to Previous Slide */
-#s1:checked ~ #slide4, #s2:checked ~ #slide5, #s3:checked ~ #slide1, #s4:checked ~ #slide2, #s5:checked ~ #slide3 {
+#c1:checked ~ #cslide4, #c2:checked ~ #cslide5, #c3:checked ~ #cslide1, #c4:checked ~ #cslide2, #c5:checked ~ #cslide3 {
   box-shadow: 0 1px 4px rgba(0,0,0, 0.4);
   transform: translate3d(-30%, 0, -250px);
 }
 
 /* Previous Slide */
-#s1:checked ~ #slide5, #s2:checked ~ #slide1, #s3:checked ~ #slide2, #s4:checked ~ #slide3, #s5:checked ~ #slide4 {
+#c1:checked ~ #cslide5, #c2:checked ~ #cslide1, #c3:checked ~ #cslide2, #c4:checked ~ #cslide3, #c5:checked ~ #cslide4 {
   box-shadow: 0 6px 10px rgba(0,0,0, 0.3), 0 2px 2px rgba(0,0,0, 0.2);
   transform: translate3d(-15%, 0, -100px);
 }

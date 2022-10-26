@@ -11,21 +11,25 @@
     <title>Roxy by GetTemplates.co</title>
     <meta name="description" content="Roxy">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    
     <!-- External CSS -->
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="vendor/select2/select2.min.css">
     <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css">
     <link rel="stylesheet" href="vendor/lightcase/lightcase.css">
-     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />    
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="css/style.min.css">    
     <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/slider3.css">
+    <link rel="stylesheet" href="css/slider4.css">
+    
 
     <!-- Modernizr JS for IE8 support of HTML5 elements and media queries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
@@ -42,21 +46,21 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar-nav-header">
             <ul class="navbar-nav ml-auto own-ul">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.html">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="about.html">Multimedia</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="publicidad.html">Publicidad</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="branding.html">Branding</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="contactame.html">Contactame</a>
-                </li>
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="about.html">Multimedia</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="publicidad.html">Publicidad</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="branding.html">Branding</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="contactame.html">Contactame</a>
+            </li>
 <!--                 <li class="nav-item">
                     <a id="side-search-open" class="nav-link" href="#">
                         <span class="lnr lnr-magnifier"></span>
@@ -101,17 +105,15 @@
 		</form>
 	</div>
 	
-</div>	<div class="jumbotron d-flex align-items-center" style="background-image: url('img/background.jpg')">
-  <div>
-  <p id="subtitle">¡Hola! Soy Claudia Flores, tengo 22 años y soy Licenciada
-    en Diseño Gráfico Publicitario, muy apasionada por la
-    ilustración y el contenido multimedia y amante de toda la
-    aventura que engloba estudiar arte. Acompañame en
-    este emocionante recorrido por mis trabajos creativos,
-    espero que disfrutes cada uno ellos como yo disfruté
-    haciendolos, sin más que agregar...
-     ¡Bienvenido a mi portafolio!</p>  
-    </div>
+</div>	<div class="jumbotron d-flex align-items-center" style="background-image: url('img/background2.png'); flex-flow: column" >
+  <!--<div style="flex-flow: column">-->
+  <h1 style="font-size: 6em; margin-bottom: 1px;" id="titlemulti">Publicidad</h1>  
+  <div style="width: 600px;"><p id="subtitle2" style="text-align: center;background: rgba(0, 0, 0, 0.5); padding: 30px;">La magia de una buena marca, esta en la forma en que transmite
+    su mensaje. ¡Bienvenido al la sección de publicidad, aca conoceras
+    muchos de los trabajos que he realizado a lo largo del tiempo,
+     ¡Disfruta tu recorrido!</p></div>
+<!--    </div>-->
+
   <!-- div class="container text-center">
     <h1 class="display-1 mb-4">RO<br>XY</h1>
   </div>
@@ -135,7 +137,62 @@
   	<img src="img/obj_triangle.png" alt="">
   </div> -->
 </div>	<!-- Features Section-->
->
+
+<div class="jumbotron jumbotron-single d-flex align-items-center" style="background-image: url(img/background2.png); flex-flow: column">
+  <section id="slider">
+    <input type="radio" name="slider" id="s1">
+    <input type="radio" name="slider" id="s2" checked>
+    <input type="radio" name="slider" id="s3">
+    <input type="radio" name="slider" id="s4">
+    <input type="radio" name="slider" id="s5">
+  
+    <label for="s1" id="slide1">
+      <img width="480" height="580" src="img/1.png"/>
+    </label>    
+    <label for="s2" id="slide2">
+      <img width="480" height="580" src="img/2.png"/>
+    </label>
+    <label for="s3" id="slide3">
+      <img width="480" height="580" src="img/3.png"/>
+    </label>
+    <label for="s4" id="slide4">
+      <img width="480" height="580" src="img/4.png"/>
+    </label>
+    <label for="s5" id="slide5">
+      <img width="480" height="580" src="img/5.jpg"/>
+    </label>
+
+    </section>        
+    <p style="background: rgba(0, 0, 0, 0.5); padding: 10px; width: 700px; text-align: center;">Publicidad para NESCAFÉ, Inspirada en una de las famosas obras renancentistas
+      de Caravaggio, porue nada te despierta, como un buen café.</p>
+    <h1 id="titlemulti">Fotografía Publicitaria</h1>
+    <section id="slider2">
+      <input type="radio" name="cslider" id="c1" checked>
+      <input type="radio" name="cslider" id="c2">      
+    
+      <label for="c1" id="cslide1" class="imgdes">
+        <img width="480" height="580" src="img/5.jpg"/>
+        <p class="hoverstylep">RON ABUELO AÑEJO
+          Foto realizada para marca de
+          Ron.
+          Se utilizaron los siguientes valores...</p>
+      </label>    
+      <label for="c2" id="cslide2" class="imgdes">
+        <img width="480" height="580" src="img/6.jpg"/>
+        <p class="hoverstylep">PANADERIA SANTA EDUVIGIS
+          Foto realizada para marca de Ron.
+          Se utilizaron los siguientes valores...</p>
+      </label>      
+      </section>
+      <h3 style="background: rgba(0, 0, 0, 0.5); padding: 10px;">Contenido: ¿Cómo aperturar tu Chivo Wallet?”</h3>  
+  </div>
+  
+  
+  
+  <!-- <a href="https://youtu.be/feVfzM--S3Y" target="self">
+    <div class="youtube-link">Watch on YouTube</div>
+  </a> -->
+</section>
 
 <!-- End of Features Section-->	
 <footer class="mastfoot my-3">
@@ -184,6 +241,15 @@
 	 
 	<!-- Main JS -->
 	<script src="js/app.min.js "></script>
+  <script>
+    function ocultar(imgdesc){
+      imgdesc.style.display = "none";
+    }
+    function ver(imgdesc){
+      imgdesc.style.display = "block";
+    }
+  </script>
 	<script src="//localhost:35729/livereload.js"></script>
+
 </body>
 </html>
