@@ -18,10 +18,19 @@ body {
   #subtitle {
    color: white;
    margin-left: 15%;
-   margin-top: 199px;
-   text-align:center;
+   margin-top: 229px;
+   text-align:justify;
    margin-right: 600px;
-   
+   line-height : 29px;
+   width: 800px;
+   font-size: 20px;
+   margin-bottom: 1px;
+  }
+  #esstha{
+    text-align: center;
+    color: white;    
+    font-size: 20px;
+    width: 1258px;
   }
    #subtitle2{
     font-size: 20px;
@@ -138,7 +147,9 @@ section {
   min-height: 100vh; }
   @media (max-width: 767px) and (orientation: landscape) {
     .jumbotron {
-      min-height: 500px; } }
+      min-height: 500px; } 
+      
+    }
   .jumbotron .container {
     position: relative;
     z-index: 1; }
@@ -168,7 +179,8 @@ section {
     font-size: 4rem;
     opacity: 0;
     animation: 1s fadeInFromTop cubic-bezier(0.785, 0.135, 0.15, 0.86) 1s forwards;
-    animation-delay: .8s; }
+    animation-delay: .8s; 
+  }
 
 .jumbotron-single h1 {
   font-size: 3rem !important; }
@@ -770,6 +782,22 @@ section {
 /*==================================
 =            RESPONSIVE            =
 ==================================*/
+@media (max-width: 1540px) {
+  #subtitle {
+    margin-right: 350px;    
+  }
+
+}
+@media (max-width: 1400px) {
+  #subtitle {
+  margin-right: 150px;
+  margin-left: 30px;
+  width: 683px;
+  }
+  #esstha{
+    width: 833px;
+  }
+}
 @media (max-width: 992px) {
   .not-on-top #header-navbar {
     position: fixed;
@@ -793,7 +821,21 @@ section {
     /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #333399, #ff00cc);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    padding: 10px; } }
+    padding: 10px; } 
+
+    #subtitle{
+      font-size: 18px;
+      width: 600px;
+      margin: 0;
+      padding: 0;
+      padding-top: 110px;
+      margin-top: 108px;
+      
+    }
+    #esstha{
+      width: 622px;
+    }
+  }
 
 @media (max-width: 767px) {
   .jumbotron h1 {
@@ -815,8 +857,13 @@ section {
      height: 215;
    }
 #subtitle{
+  font-size: 14px;
+  width: 500px;
+  margin: 0;
+  padding: 0;
+  padding-top: 40px;
+  margin-top: 108px;
   
-  margin: 10%;
 }
   }
 
