@@ -142,9 +142,9 @@
 
 <div class="jumbotron jumbotron-single d-flex align-items-center" style="background-image: url(img/background2.png); flex-flow: column">
   <section id="slider">
-    <input type="radio" name="slider" id="s1">
-    <input type="radio" name="slider" id="s2" checked>
-    <input type="radio" name="slider" id="s3">
+    <input type="radio" name="slider" id="s1" onclick="changelbl()"checked>
+    <input type="radio" name="slider" id="s2" onclick="changelbl2()" >
+    <input type="radio" name="slider" id="s3" onclick="changelbl()">
   
     <label for="s1" id="slide1" >
       <iframe width="660" height="456" src="https://www.youtube.com/embed/ew8xwvkFuKc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -156,12 +156,12 @@
       <iframe width="660" height="456" src="https://www.youtube.com/embed/iZrm-Bswcys" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </label>
     </section>        
-    <h3 style="z-index: 100;background: rgba(0, 0, 0, 0.5); padding: 10px;"><a style="color:white" href="https://www.behance.net/lis_her040">Campaña: Confiteria Americana “hay cosas que nunca cambian”</a></h3>
+    <h3 style="z-index: 100;background: rgba(0, 0, 0, 0.5); padding: 10px;"><a id="lbl_1" style="color:white" href="https://www.behance.net/lis_her040">Campaña: Confiteria Americana “hay cosas que nunca cambian”</a></h3>
     <h1 id="titlemulti">¡Hazlo Realidad!</h1>
     <section id="slider2">
-      <input type="radio" name="cslider" id="c1">
-      <input type="radio" name="cslider" id="c2" checked>
-      <input type="radio" name="cslider" id="c3">
+      <input type="radio" name="cslider" id="c1" onclick="changelbl_1()" >
+      <input type="radio" name="cslider" id="c2" onclick="changelbl_2()"checked>
+      <input type="radio" name="cslider" id="c3" onclick="changelbl_3()">
     
       <label for="c1" id="cslide1">
         <iframe width="660" height="456" src="https://www.youtube.com/embed/OvjnPvjfBjU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>        
@@ -173,7 +173,7 @@
         <iframe width="660" height="456" src="https://www.youtube.com/embed/VllSqIk4uAI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </label>
       </section>
-      <h3 style="background: rgba(0, 0, 0, 0.5); padding: 10px;">Contenido: ¿Cómo aperturar tu Chivo Wallet?”</h3>  
+      <h3 id="lbl_2"style="background: rgba(0, 0, 0, 0.5); padding: 10px;">Contenido ¿Cómo aperturar tu Chivo Wallet?”</h3>  
   </div>
   
   
@@ -198,7 +198,27 @@
 	 
 	<!-- Main JS -->
 	<script src="js/app.min.js "></script>
-	
+	<script>
+    function changelbl(){
+      $("#lbl_1").text('Campaña: Confiteria Americana “Hay cosas que nunca cambian”');
+    }
+    function changelbl2(){
+      $("#lbl_1").text('Abril Boutique: “Contigo en cada paso”');
+    }
+    function changelbl3(){
+      $("#lbl_1").text('Burger King: Jingle “Papa Lover - BK”');
+    }
+
+    function changelbl_1(){
+      $("#lbl_2").text('Contenido “Actividades que puedes hacer en la Ruta de la Flores');
+    }
+    function changelbl_2(){
+      $("#lbl_2").text('Contenido ¿Cómo aperturar tu Chivo Wallet?');
+    }
+    function changelbl_3(){
+      $("#lbl_2").text('Noticiero en Punto, Edición Matutina');
+    }
+  </script>
 
 </body>
 </html>

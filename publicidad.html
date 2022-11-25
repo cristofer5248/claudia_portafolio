@@ -137,31 +137,30 @@
 
 <div class="jumbotron jumbotron-single d-flex align-items-center" style="background-image: url(img/background2.png); flex-flow: column">
   <section id="slider">
-    <input type="radio" name="slider" id="s1">
-    <input type="radio" name="slider" id="s2" checked>
-    <input type="radio" name="slider" id="s3">
-    <input type="radio" name="slider" id="s4">
-    <input type="radio" name="slider" id="s5">
+    <input type="radio" name="slider" id="s1" onclick="changelbl_2()">
+    <input type="radio" name="slider" id="s2" onclick="changelbl_4()" checked>
+    <input type="radio" name="slider" id="s3" onclick="changelbl_1()">
+    <input type="radio" name="slider" id="s4" onclick="changelbl_3()">
+    <!-- <input type="radio" name="slider" id="s5" onclick="changelbl_5()"> -->
   
     <label for="s1" id="slide1">
       <img width="480" height="580" src="img/1.png"/>
     </label>    
     <label for="s2" id="slide2">
-      <img width="480" height="580" src="img/2.png"/>
-    </label>
-    <label for="s3" id="slide3">
       <img width="480" height="580" src="img/3.png"/>
     </label>
-    <label for="s4" id="slide4">
+    <label for="s3" id="slide3">
       <img width="480" height="580" src="img/4.png"/>
     </label>
-    <label for="s5" id="slide5">
-      <img width="480" height="580" src="img/5.jpg"/>
+    <label for="s4" id="slide4">
+      <img width="480" height="580" src="img/2.png"/>
     </label>
+    <!-- <label for="s5" id="slide5">
+      <img width="480" height="580" src="img/5.jpg"/>
+    </label> -->
 
     </section>        
-    <p style="background: rgba(0, 0, 0, 0.5); padding: 10px; width: 700px; text-align: center;">Publicidad para NESCAFÉ, Inspirada en una de las famosas obras renancentistas
-      de Caravaggio, porque nada te despierta, como un buen café.</p>
+    <p id="lbl_3" style="background: rgba(0, 0, 0, 0.5); padding: 10px; width: 700px; text-align: center;">Toztecas Diana, Afiche Surrealista.</p>
     <h1 id="titlemulti">Fotografía Publicitaria</h1>
     <section id="slider2">
       <input type="radio" name="cslider" id="c1">
@@ -186,7 +185,7 @@
         <p class="hoverstylep">Sesión de Fotos, Abril Boutique</p>
       </label>      
       </section>
-      <h3 style="background: rgba(0, 0, 0, 0.5); padding: 10px;">Contenido: ¿Cómo aperturar tu Chivo Wallet?”</h3>  
+      <!-- <h3 style="background: rgba(0, 0, 0, 0.5); padding: 10px;">Contenido: ¿Cómo aperturar tu Chivo Wallet?”</h3>   -->
   </div>
   
   
@@ -217,6 +216,18 @@
     }
     function ver(imgdesc){
       imgdesc.style.display = "block";
+    }
+    function changelbl_1(){
+      $("#lbl_3").text('Publicidad para fragancia de DIOR');
+    }
+    function changelbl_2(){
+      $("#lbl_3").text('Afiche Capri, Pintura renacentista');
+    }
+    function changelbl_3(){
+      $("#lbl_3").text('NESCAFÉ, obra de Caravaggio.');      
+    }
+    function changelbl_4(){
+      $("#lbl_3").text('Toztecas Diana, Afiche Surrealista');
     }
   </script>
 	
