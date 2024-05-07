@@ -1,0 +1,70 @@
+#fullscreen {
+  display: none;
+}
+#bluescreen {
+  font-family: 'Lucida Console';
+  width: 640px;
+  padding-top: 20px;
+  height: 480px;
+  background: #010080;
+  color: white;
+  cursor: none;
+  font-size: 12px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+#bluescreen p {
+  margin-bottom: 12px;
+}
+/* These -prefix-full-screen must be seperated */
+:-webkit-full-screen {
+  display: block !important;
+}
+:-moz-full-screen {
+  display: block !important;
+}
+:full-screen {
+  display: block !important;
+}
+:-moz-full-screen #bluescreen {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -320px;
+}
+/* 人生オワタ */
+#top {
+  margin-top: 20px;
+  height: 90%;
+  position: relative;
+}
+#jinseiOwata {
+  font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, 'MS PGothic', 'ＭＳ Ｐゴシック', sans-serif;
+  font-size: 16px;
+  line-height: 18px;
+  width: 100%;
+  left: 0;
+  top: 50%;
+  position: absolute;
+}
+#click {
+  font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, 'MS PGothic', 'ＭＳ Ｐゴシック', sans-serif;
+  font-size: 16px;
+  line-height: 18px;
+  display: block;
+  background: none;
+  text-align: center;
+  margin: 0 auto;
+  border: 1px #000 solid;
+  outline: 0;
+  width: 250px;
+  padding: 30px;
+  cursor: pointer;
+}
+#owata {
+  padding: 50px 0 0 30%;
+  border-bottom: 1px #000 solid;
+}
