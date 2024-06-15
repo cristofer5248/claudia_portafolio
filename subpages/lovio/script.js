@@ -20,7 +20,7 @@ class Heart {
       'si tocas aqui',
       'nuevamente, Lista?',
       ' enviando...'];
-    
+
 
     heart.addEventListener('click', () => {
       //enviarPulse();
@@ -32,9 +32,10 @@ class Heart {
     const selection = this.counter % sayings.length; // Selecciona el texto secuencialmente
     this.counter++; // Incrementa el contador
     console.log(selection + "y" + sayings.length);
-    if (selection == sayings.length-1){
+    if (selection == sayings.length - 1) {
       console.log("ya cayo");
-      enviarPulse("enviando");
+      $('#exampleModal').modal('show');
+      // enviarPulse("enviando");
     }
     return sayings[selection];
   }

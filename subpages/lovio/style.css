@@ -12,6 +12,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   font-family: "Nunito", sans-serif;
+  
 }
 
 .heart {
@@ -69,6 +70,7 @@ body {
   transform: translateZ(0) rotate(45deg) scale(1);
   opacity: 1;
   transition: opacity 0.2s ease-out;
+  line-height: 1;
 }
 .heart-text span {
   display: block;
