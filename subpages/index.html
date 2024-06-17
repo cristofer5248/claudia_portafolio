@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <title>Apps for Blanquis!</title>
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 
 </head>
 <body>
@@ -44,7 +50,7 @@
                 </div>
                 <div id="bulb-prev" class="starter-preview">
                     <img id="leaf" class="small-img" src="img/heart8.png" alt="leaf" />
-                    <img id="bulb" class="for-display" src="img/Eyes Emoji.png" alt="bulbasaur"  />
+                    <img id="bulb" class="for-display" src="img/Eyes Emoji.png" alt="bulbasaur" data-toggle="modal" data-target="#exampleModal" />
                     <p id="nameBulb">Soon</p>
                 </div>
             </div>
@@ -69,11 +75,44 @@
             </div>
         </div>
 
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Password para acceso anticipado?</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <input type="text" id="miinput" />
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="checkpassword()" >Enviar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
     </body>
 </html>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.4/gsap.min.js'></script>
 <script src='https://kit.fontawesome.com/e03d7ac5cf.js'></script><script  src="./script.js"></script>
+<script>
+    function checkpassword(){
+        var password = document.getElementById("miinput").value;
+        console.log(password);
+        if (password == "blanquis123") {
+            location.replace("shake/index.html");
+        }
+        else{
+            document.getElementById("miinput").value = ''
+            alert("No :(");
+        }
+    }
+</script>
 
 </body>
 </html>
