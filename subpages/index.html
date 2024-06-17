@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Apps for Blanquis!</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Apps for Blanquis!</title>
+        <meta name="description" content="Pokemon Loookup">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="output.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="start-pokemon">
+                <img class="starters squirtle" src="https://user-images.githubusercontent.com/48612525/86188271-00b67c00-baf3-11ea-95ee-1eacbe57588b.png" alt="Squirtle" />
+                <img class="starters charmander" src="https://user-images.githubusercontent.com/48612525/86188230-e086bd00-baf2-11ea-8463-4032ec0b546d.png" alt="Charmander" />
+                <img class="starters bulbasaur" src="https://user-images.githubusercontent.com/48612525/86188197-bdf4a400-baf2-11ea-887a-cddc06183939.png" alt="Bulbasaur" />
+            </div>
+            <div class="title">
+                <h1 id="lab">Apps for Blanquis!</h1>
+            </div>
+            <div class="btn-group">
+                <button id="choose" class="btn">Choose your option!</button>
+                <button id="reset" class="btn">Reset</button>
+            </div>
+            <div class="flex">
+                <div id="sq-prev" class="starter-preview">
+                    <img id="water" class="small-img" src="img/coffe.png" alt="water droplet" />
+                    <img id="squirt" class="for-display" src="img/gatito8bit.png" alt="squirtle" onclick="setTimeout(function() { window.location.href = 'cafecito/index.html'; }, 1000);" />
+                    <p id="nameSq">Invitation</p>
+                </div>
+                <div id="charm-prev" class="starter-preview">
+                    <img id="flame" class="small-img" src="img/heart8k.png" alt="flame" />
+                    <img id="char" class="for-display" src="img/heart8.png" alt="charmander" onclick="setTimeout(function() { window.location.href = 'lovio/index.html'; }, 1000);" />
+                    <p id="nameChar">I miss you</p>
+                </div>
+                <div id="bulb-prev" class="starter-preview">
+                    <img id="leaf" class="small-img" src="img/heart8.png" alt="leaf" />
+                    <img id="bulb" class="for-display" src="img/Eyes Emoji.png" alt="bulbasaur"  />
+                    <p id="nameBulb">Soon</p>
+                </div>
+            </div>
+            <div class="bottom">
+                <img id="poke-ball" src="img/ella.png   " alt="pokeball" />
+
+                <div class="pokemon-tile">
+                    <div class="top">
+                        <p id="poke-name"></p>
+                        <p id="poke-hp"></p>
+                    </div>
+                    <img id="pokemon-img" />
+                    <div class="poke-data">
+                        <p id="poke-type"></p>
+                        <p id="poke-weight"></p>
+                    </div>
+                </div>
+                <div class="final">
+                    <h2 id="final-msg"></h2>
+                </div>
+            
+            </div>
+        </div>
+
+    </body>
+</html>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.4/gsap.min.js'></script>
+<script src='https://kit.fontawesome.com/e03d7ac5cf.js'></script><script  src="./script.js"></script>
+
+</body>
+</html>
