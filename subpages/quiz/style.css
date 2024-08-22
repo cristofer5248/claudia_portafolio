@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,400i,700");
+
+:root {
+--hue-neutral: #6200EA;
+--hue-wrong: #D50000;
+--hue-correct: #00E676;
+}
+
+body {
+background-image: url('data:image/svg+xml,%3Csvg width="42" height="44" viewBox="0 0 42 44" xmlns="http://www.w3.org/2000/svg"%3E%3Cg id="Page-1" fill="none" fill-rule="evenodd"%3E%3Cg id="brick-wall" fill="%239C92AC" fill-opacity="0.4"%3E%3Cpath d="M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+--hue: var(--hue-neutral);
+padding:0;
+margin:0;
+font-family:Raleway;
+display:flex;
+justify-content:center;
+align-items:center;
+width:100vw;
+background-color: #AA00FF;
+}
+
+body.correct  {
+background-color: var(--hue-correct);  
+}
+
+body.wrong  {
+background-color: var(--hue-wrong);  
+}
+
+.btn {
+color:white;
+width: 150px;
+height:70px;
+max-height:100px;
+background-color:#6200EA;
+border: solid 2px black;
+border-radius: 3px;
+font-family:Raleway;
+font-size:17px;
+cursor:pointer;
+margin:5px;
+}
+
+.container {
+  width: 370px;
+  max-width:80%;
+  background-color:white;
+  border-radius:5px;
+  padding:10px;
+  box-shadow: 0 0 10px 2px;
+  text-align: center;
+}
+
+.btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap:10px;
+  margin: 20px 0;
+}
+
+.btn:hover {
+transition:0.5s;
+color: #6200EA;
+background-color:white;
+border: solid 2px #6200EA;
+cursor:pointer;
+}
+
+.btn.correct {
+background-color: var(--hue-correct);
+color: white;
+}
+
+.btn.wrong {
+background-color: var(--hue-wrong);  
+color: white;
+}
+
+.controls {
+  color:white;
+  width: 361px;
+  height:70px;
+  background-color:#6200EA;
+  border: solid 2px black;
+  border-radius: 3px;
+  font-family:Raleway;
+  font-size:17px;
+  display:flex;
+  justify-content:center;
+  align-items:center; 
+  cursor:pointer;
+  font-weight:bold;
+  font-size:40px;
+  margin:auto;
+}
+
+.next {
+  color:white;
+  width: 340px;
+  float:left;
+  height:70px;
+  background-color:#6200EA;
+  border: solid 2px black;
+  border-radius: 3px;
+  font-family:Raleway;
+  font-size:17px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:40px;
+  margin:5px;
+  display: inline-block;
+}
+
+
+.hide {
+display:none;
+}
+
+.next:hover {
+  transition:0.5s;
+  color:#6200EA;
+  width: 340px;
+  height:70px;
+  background-color:white;
+  border: solid 2px #6200EA;
+  border-radius: 3px;
+  font-family:Raleway;
+  font-size:17px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:40px;
+  margin:5px;
+  display: inline-block;
+}
+ img {
+  width: 372px;
+  height: 480px;
+}
