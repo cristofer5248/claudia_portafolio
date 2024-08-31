@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAC DYNAMIC</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #instructions, #result-table, #total-table {
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+        table {
+            width: 80%;
+            margin-top: 20px;
+            border: 3px solid #512c2c;
+        }
+        th {
+            color: #512c2c;
+        }
+        .text-celeste { 
+            color: #512c2c; 
+        }
+        tbody td {
+            background-color: skyblue;
+            color: #512c2c;
+        }
+        .bg-lime { 
+            background: rgba(12,240,65,1); 
+        }
+        .bg-orange { 
+            background: rgba(251,177,0,1);
+        }
+        .bg-yellow { 
+            background: rgba(224,251,0,1);
+        }
+        .bg-purple { 
+            background: rgba(139,0,251,1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">JAC DYNAMIC</h1>
+        <div id="start-section">
+            <input type="number" id="participant-count" class="form-control mb-2" placeholder="Ingrese la cantidad de personas">
+            <button class="btn btn-primary" onclick="start()">Aceptar</button>
+        </div>
+        <div id="instructions" class="mt-4">
+            <p class="lead">PRESIONA LA LETRA "J" PARA CAMBIAR EL COLOR</p>
+        </div>
+        <table id="result-table" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="bg-lime text-white">Verde Limón</th>
+                    <th class="bg-orange text-white">Naranja</th>
+                    <th class="bg-yellow text-white">Amarillo</th>
+                    <th class="bg-purple text-white">Morado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas se generarán dinámicamente -->
+            </tbody>
+        </table>
+        <table id="total-table" class="table table-bordered table-hover mt-4">
+            <thead>
+                <tr>
+                    <th class="bg-lime text-white" >Total Verde Limón</th>
+                    <th class="bg-orange text-white">Total Naranja</th>
+                    <th class="bg-yellow text-white">Total Amarillo</th>
+                    <th class="bg-purple text-white">Total Morado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="total-lime" class="text-celeste" >0</td>
+                    <td id="total-orange" class="text-celeste">0</td>
+                    <td id="total-yellow" class="text-celeste" >0</td>
+                    <td id="total-purple" class="text-celeste" >0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const colors = ['Verde Limón', 'Naranja', 'Amarillo', 'Morado'];
+        const bgColorMap = {
+            'Verde Limón': 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(12,240,65,1) 35%, rgba(0,212,255,1) 100%)',
+            'Naranja': 'linear-gradient(90deg, rgba(36,2,0,1) 0%, rgba(251,193,0,1) 69%, rgba(255,106,0,1) 100%)',
+            'Amarillo': 'linear-gradient(90deg, rgba(27,36,0,1) 0%, rgba(224,251,0,1) 69%, rgba(236,255,0,1) 100%)',
+            'Morado': 'linear-gradient(90deg, rgba(94,2,185,1) 0%, rgba(176,143,208,1) 69%, rgba(99,17,175,1) 100%)'
+        };
+        const totalCount = {
+            'Verde Limón': 0,
+            'Naranja': 0,
+            'Amarillo': 0,
+            'Morado': 0
+        };
+        let participantCount = 0;
+        let pressCount = 0;
+        let colorCounts = {
+            'Verde Limón': 0,
+            'Naranja': 0,
+            'Amarillo': 0,
+            'Morado': 0
+        };
+
+        function start() {
+            participantCount = parseInt(document.getElementById('participant-count').value);
+
+            if (isNaN(participantCount) || participantCount <= 0) {
+                alert('Por favor, ingresa un número válido de personas.');
+                return;
+            }
+
+            document.getElementById('start-section').classList.add('hidden');
+            document.getElementById('instructions').style.display = 'block';
+            document.getElementById('result-table').style.display = 'table';
+            document.getElementById('total-table').style.display = 'table';
+
+            // Calcular cuántos de cada color se deben asignar
+            const baseCount = Math.floor(participantCount / 4);
+            const remainder = participantCount % 4;
+
+            // Asignar el número de participantes a cada color de manera uniforme
+            colors.forEach((color, index) => {
+                colorCounts[color] = baseCount + (index < remainder ? 1 : 0);
+            });
+
+            document.addEventListener('keydown', changeColor);
+        }
+
+        function changeColor(event) {
+            if (event.key.toLowerCase() === 'j') {
+                if (pressCount >= participantCount) {
+                    alert('Se ha alcanzado el número máximo de pulsaciones.');
+                    document.removeEventListener('keydown', changeColor);
+                    return;
+                }
+
+                let randomColor = getRandomColor();
+                document.body.style.background = bgColorMap[randomColor];
+
+                addColorToTable(randomColor);
+                updateTotals(randomColor);
+                pressCount++;
+            }
+        }
+
+        function getRandomColor() {
+            let availableColors = colors.filter(color => colorCounts[color] > 0);
+            let randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+            colorCounts[randomColor]--;
+            return randomColor;
+        }
+
+        function addColorToTable(color) {
+            const tableBody = document.querySelector('#result-table tbody');
+            let newRow;
+
+            // Verificar si necesitamos una nueva fila
+            if (tableBody.rows.length === 0 || tableBody.rows[tableBody.rows.length - 1].cells.length === 4) {
+                newRow = tableBody.insertRow();
+                for (let i = 0; i < 4; i++) {
+                    const cell = newRow.insertCell();
+                    cell.textContent = '-';
+                    cell.style.backgroundColor = 'skyblue';
+                    cell.style.color = '#512c2c';
+                }
+            } else {
+                newRow = tableBody.rows[tableBody.rows.length - 1];
+            }
+
+            // Asignar la hora a la celda correspondiente
+            const colorIndex = colors.indexOf(color);
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            newRow.cells[colorIndex].textContent = timeString;
+        }
+
+        function updateTotals(color) {
+            totalCount[color]++;
+            document.getElementById('total-lime').textContent = totalCount['Verde Limón'];
+            document.getElementById('total-orange').textContent = totalCount['Naranja'];
+            document.getElementById('total-yellow').textContent = totalCount['Amarillo'];
+            document.getElementById('total-purple').textContent = totalCount['Morado'];
+        }
+    </script>
+</body>
+</html>
