@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>CodePen - Sun Flower</title>
+	<link rel="stylesheet" href="./style.css">
+	<link rel="stylesheet" href="./stylecard.css">
+	<link rel="stylesheet" href="buttonyes.css">
+
+</head>
+
+<body>
+	
+	<!-- partial:index.partial.html -->
+	<div id="position" class="sunflower">
+		<div class="head">
+			<div id="eye-1" class="eye"></div>
+			<div id="eye-2" class="eye"></div>
+			<div class="mouth"></div>
+		</div>
+		<div class="petals"></div>
+		<div class="trunk">
+			<div class="left-branch"></div>
+			<div class="right-branch"></div>
+		</div>
+		<div class="vase"></div>
+	</div>
+	<div class="bday-card">
+	<div class="bday-message bday-message--paper">
+		<p>Me has hecho bien desde que iniciaste a ser tan intima conmigo, no me equivoque al elegir una muchacha que procuro cuidar su corazon, el primer dia me enamore de tu nobleza
+			y quize conocerte, para luego encontrame un rio de amor que eres... vive Dios que siempre he sido debil al ver a alguien tan bella y dulce porque me nace querer conservar ese corazon.
+			Por lo tanto, dejame tener el honor de no solo querer eso, si no comprometerme hacerlo, de mi lado estoy muy seguro que me quieres y que harias mucho por mi asi como yo haria mucho por ti.	
+		</p>
+		<b>¿Quisieras ser la novia del geek 💚?</b>
+		<div class="container" id="mainContainer">
+			<!-- <h1>Will You Be My Girlfriend?</h1> -->
+			<div class="buttons">
+				<button id="yesBtn" onclick="aceptar()"> Yes!</button>
+				<button id="noBtn">No</button>
+			</div>
+			<img id="loveImage" src="image.png" alt="Love Image" class="hidden">
+			<p id="loveText" class="hidden">I love you!</p>
+		</div>
+		<h2>
+			<p class="bday-decor bday-decor--bottom-right zoom-left-in-out">🍒💚 </p>
+			<p class="bday-decor bday-decor--bottom-left zoom-left-in-out" style="font-size: 58px">Chris & Liss</p>
+			<br>
+			
+	</div>
+	<!-- partial -->
+<script type="text/javascript" src="buttonyes.js"></script>
+<script>
+	function aceptar(){
+	window.location.replace("https://api.whatsapp.com/send?phone=50373519858&text=Obviamente%20SI%20chikis,%20mi%20geek%20mi%20sherk%20%F0%9F%92%9A%20");
+	}
+</script>
+</html>

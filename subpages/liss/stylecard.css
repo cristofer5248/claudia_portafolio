@@ -49,8 +49,9 @@ body {
 }
 
 .bday-card {
-  max-width: 420px;
-  height: 100%;
+  /* max-width: 420px; */
+  max-width: 90%;
+  /* height: 100%; */
   padding-top: var(--space-lg);
   display: flex;
   align-items: center;

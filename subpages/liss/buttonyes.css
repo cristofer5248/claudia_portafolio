@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap');
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0e4d7;
+    font-family: 'Baloo 2', cursive;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    /* background: #fff; */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #ff6f91;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 1.5em;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#yesBtn {
+    background-color: #ffad60;
+    color: white;
+}
+
+#yesBtn:hover {
+    background-color: #ff9156;
+    transform: scale(1.1);
+}
+
+#noBtn {
+    background-color: #ff6f91;
+    color: white;
+    position: relative;
+}
+
+#noBtn:hover {
+    background-color: #ff4766;
+    transform: scale(1.1);
+}
+
+.hidden {
+    display: none;
+}
+
+#loveImage {
+    width: 300px;
+    margin-top: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 2s forwards;
+}
+
+#loveText {
+    color: #ff6f91;
+    font-size: 2em;
+    margin-top: 20px;
+    animation: fadeIn 2s forwards, sparkle 1s infinite 2s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        text-shadow: 0 0 10px #ff6f91, 0 0 20px #ff6f91, 0 0 30px #ff6f91, 0 0 40px #ff6f91, 0 0 50px #ff6f91, 0 0 60px #ff6f91, 0 0 70px #ff6f91;
+    }
+    50% {
+        text-shadow: 0 0 20px #ff6f91, 0 0 30px #ff6f91, 0 0 40px #ff6f91, 0 0 50px #ff6f91, 0 0 60px #ff6f91, 0 0 70px #ff6f91, 0 0 80px #ff6f91;
+    }
+}
