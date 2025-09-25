@@ -2,232 +2,94 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Nearest con Distance Matrix (JS Vanilla)</title>
+  <title>Nearest con GPS (Distance Matrix)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
-    h1 { font-size: 1.2rem; margin-bottom: 8px; }
-    label { display:block; margin-top: 12px; font-weight: 600; }
-    input, textarea, select, button { width: 100%; padding: 10px; margin-top: 6px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; margin-top: 16px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 8px; font-size: .95rem; }
-    .muted { color: #666; font-size: .9rem; }
-    .ok { color: #0a7; font-weight: 600; }
-    .err { color: #c00; font-weight: 600; }
-    .tiny { font-size: .85rem; }
-  </style>
+  <link href="style.css" rel="stylesheet" />
 </head>
 <body>
-  <h1>Ubicación más cercana (Distance Matrix)</h1>
+  <h1>Ubicación más cercana (manual o GPS)</h1>
 
-  <div class="card">
-    <div class="row">
-      <div>
-        <label for="origin">Origen (tu ubicación)</label>
-        <input id="origin" placeholder="Ej: El Salvador Escalón o 13.69,-89.24" value="El Salvador Escalón" />
+ <link href="style.css" rel="stylesheet" />
+
+<div class="card">
+  <div class="row">
+    <div>
+      <label for="origin">Origen (tu ubicación)</label>
+      <div class="inline">
+        <input id="origin" placeholder="Ej: El Salvador Escalón o 13.69,-89.24" />
+        <!-- Icono GPS (contorno rojo) -->
+        <button id="btnGps" class="icon-btn" title="Usar mi ubicación actual" aria-label="Usar mi ubicación">
+          <!-- SVG ubicación -->
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"></circle>
+            <line x1="12" y1="1" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="1" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="19" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+          </svg>
+        </button>
       </div>
-      <div>
-        <label for="mode">Modo de viaje</label>
-        <select id="mode">
-          <option value="DRIVING" selected>Conduciendo</option>
-          <option value="WALKING">Caminando</option>
-          <option value="BICYCLING">Bicicleta</option>
-          <option value="TRANSIT">Transporte público</option>
-        </select>
-      </div>
+      <div class="tiny muted" id="gpsMsg"></div>
     </div>
-
-    <label for="destinations">Destinos (uno por línea) – admite Plus Codes</label>
-    <textarea id="destinations" rows="8" placeholder="Ej:
-PQGJ+VJF, San Salvador
-PQGJ+6M6, Calle Sierra Madre, San Salvador
-PQ9J+74, San Salvador
-PQHH+24W, San Salvador
-PQPR+3WW, Mejicanos
-MQWV+G6P, 12 Calle Poniente, San Salvador
-MPF3+65X, 16 Avenida Sur, Santa Tecla"></textarea>
-
-    <div class="row">
-      <div>
-        <label><input type="checkbox" id="traffic" checked /> Usar tráfico (solo DRIVING)</label>
-      </div>
-      <div>
-        <label for="trafficModel">Modelo de tráfico</label>
-        <select id="trafficModel">
-          <option value="bestguess" selected>best_guess</option>
-          <option value="pessimistic">pessimistic</option>
-          <option value="optimistic">optimistic</option>
-        </select>
-      </div>
+    <div>
+      <label for="mode">Modo de viaje</label>
+      <select id="mode">
+        <option value="DRIVING" selected>Conduciendo</option>
+        <option value="WALKING">Caminando</option>
+        <option value="BICYCLING">Bicicleta</option>
+        <option value="TRANSIT">Transporte público</option>
+      </select>
     </div>
-
-    <button id="run">Calcular más cercano</button>
-    <div id="msg" class="tiny muted" style="margin-top:8px;"></div>
   </div>
+
+  <!-- Filtros de categoría -->
+  <div class="row">
+    <div>
+      <label>Categorías a incluir</label>
+      <div class="chips">
+        <label><input type="checkbox" class="cat" value="JAC" checked> JAC</label>
+        <label><input type="checkbox" class="cat" value="JOVENES" checked> JÓVENES</label>
+      </div>
+    </div>
+    <div>
+      <label>&nbsp;</label>
+      <button id="run">Calcular más cercano</button>
+    </div>
+  </div>
+
+  <!-- Editor de destinos etiquetados -->
+  <label for="destEditor">Destinos (Nombre || Dirección/PlusCode || Categoría)</label>
+  <textarea id="destEditor" rows="8" class="mono tiny"
+    placeholder="Ejemplo:
+CELUPAZ JAC MONTEBELLO || PQGJ+VJF, San Salvador || JAC
+PW83+M4 Ilopango || PW83+M4, Ilopango || JOVENES"></textarea>
+
+  <div class="row">
+    <button id="saveDest">Guardar destinos</button>
+    <div class="tiny muted" id="saveMsg"></div>
+  </div>
+
+  <div class="row compact">
+    <label><input type="checkbox" id="traffic" checked> Usar tráfico (solo DRIVING)</label>
+    <div>
+      <label for="trafficModel" class="sr-only">Modelo de tráfico</label>
+      <select id="trafficModel">
+        <option value="bestguess" selected>best_guess</option>
+        <option value="pessimistic">pessimistic</option>
+        <option value="optimistic">optimistic</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="msg" class="tiny muted" style="margin-top:8px;"></div>
+</div>
 
   <div id="nearest" class="card" style="display:none;"></div>
   <div id="ranking" class="card" style="display:none;"></div>
 
-  <!-- Carga Maps JavaScript API (language/region en ES/SV) -->
+  <!-- Maps JavaScript API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjXdrg6sNdLjmDQ91gfC2LOCyXVgspV8E&language=es&region=SV"></script>
-  <script>
-    const $ = (sel) => document.querySelector(sel);
-
-    function kms(meters) { return (meters / 1000).toFixed(3); }
-    function fmtDur(seconds) {
-      const m = Math.round(seconds / 60);
-      if (m < 60) return `${m} min`;
-      const h = Math.floor(m / 60), r = m % 60;
-      return r ? `${h} h ${r} min` : `${h} h`;
-    }
-
-    async function run() {
-      const origin = $("#origin").value.trim();
-      const mode = $("#mode").value;
-      const useTraffic = $("#traffic").checked;
-      const trafficModel = $("#trafficModel").value;
-
-      let dests = $("#destinations").value
-        .split("\n")
-        .map(s => s.trim())
-        .filter(Boolean);
-
-      if (!origin) { $("#msg").textContent = "Escribe un origen."; return; }
-      if (!dests.length) { $("#msg").textContent = "Agrega al menos un destino."; return; }
-      if (dests.length > 25) { $("#msg").textContent = "Máximo 25 destinos por llamada."; return; }
-
-      $("#msg").textContent = "Consultando Distance Matrix…";
-      $("#nearest").style.display = "none";
-      $("#ranking").style.display = "none";
-
-      const service = new google.maps.DistanceMatrixService();
-
-      const req = {
-        origins: [origin],
-        destinations: dests,
-        travelMode: google.maps.TravelMode[mode],
-        unitSystem: google.maps.UnitSystem.METRIC,
-        language: "es",
-        region: "SV"
-      };
-
-      if (mode === "DRIVING" && useTraffic) {
-        req.drivingOptions = {
-          departureTime: new Date(),
-          trafficModel: trafficModel
-        };
-      }
-
-      service.getDistanceMatrix(req, (res, status) => {
-        if (status !== "OK") {
-          $("#msg").textContent = `Error: ${status}`;
-          return;
-        }
-
-        const elements = res.rows?.[0]?.elements || [];
-        const resolved = res.destinationAddresses || [];
-
-        const rows = elements.map((el, i) => {
-          const input = dests[i];
-          const display = (resolved[i] && resolved[i].trim()) || input;
-
-          if (el.status !== "OK") {
-            return {
-              entrada: input,
-              display,
-              status: el.status,
-              distanceMeters: Number.POSITIVE_INFINITY,
-              durationSec: Number.POSITIVE_INFINITY
-            };
-          }
-
-          const dist = el.distance?.value ?? Number.POSITIVE_INFINITY;
-          // Preferimos duration_in_traffic si existe y se pidió tráfico
-          const dur = (el.duration_in_traffic?.value ?? el.duration?.value ?? Number.POSITIVE_INFINITY);
-
-          return {
-            entrada: input,
-            display,
-            status: "OK",
-            distanceMeters: dist,
-            durationSec: dur
-          };
-        });
-
-        // Ordenar por distancia (metros)
-        rows.sort((a, b) => a.distanceMeters - b.distanceMeters);
-
-        // Más cercano válido
-        const nearest = rows.find(r => r.status === "OK");
-
-        // Render: nearest
-        if (nearest) {
-          $("#nearest").innerHTML = `
-            <h2>Más cercano</h2>
-            <div><span class="ok">${nearest.display}</span></div>
-            <div class="muted">Entrada: ${nearest.entrada}</div>
-            <div style="margin-top:6px;">Distancia: <b>${kms(nearest.distanceMeters)} km</b></div>
-            <div>Duración aprox.: <b>${fmtDur(nearest.durationSec)}</b></div>
-          `;
-          $("#nearest").style.display = "block";
-        } else {
-          $("#nearest").innerHTML = `<span class="err">No hay rutas disponibles a ninguno de los destinos.</span>`;
-          $("#nearest").style.display = "block";
-        }
-
-        // Render: ranking
-        const rowsHtml = rows.map((r, idx) => {
-          if (r.status === "OK") {
-            return `
-              <tr>
-                <td>${String(idx + 1).padStart(2, "0")}</td>
-                <td>${r.display}<div class="muted tiny">Entrada: ${r.entrada}</div></td>
-                <td>${kms(r.distanceMeters)} km</td>
-                <td>~ ${fmtDur(r.durationSec)}</td>
-              </tr>
-            `;
-          } else {
-            return `
-              <tr>
-                <td>${String(idx + 1).padStart(2, "0")}</td>
-                <td>${r.display}<div class="muted tiny">Entrada: ${r.entrada}</div></td>
-                <td colspan="2"><span class="err">${r.status}</span></td>
-              </tr>
-            `;
-          }
-        }).join("");
-
-        $("#ranking").innerHTML = `
-          <h2>Ranking (por distancia)</h2>
-          <table>
-            <thead>
-              <tr><th>#</th><th>Destino</th><th>Distancia</th><th>Duración</th></tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-          <div class="muted tiny" style="margin-top:6px;">
-            Nota: si activas tráfico, se usa <code>duration_in_traffic</code> cuando está disponible.
-          </div>
-        `;
-        $("#ranking").style.display = "block";
-        $("#msg").textContent = "";
-      });
-    }
-
-    $("#run").addEventListener("click", run);
-
-    // Demo: precarga tus destinos de ejemplo
-    $("#destinations").value = [
-      "PQGJ+VJF, San Salvador",
-      "PQGJ+6M6, Calle Sierra Madre, San Salvador",
-      "PQ9J+74, San Salvador",
-      "PQHH+24W, San Salvador",
-      "PQPR+3WW, Mejicanos",
-      "MQWV+G6P, 12 Calle Poniente, San Salvador",
-      "MPF3+65X, 16 Avenida Sur, Santa Tecla"
-    ].join("\n");
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
