@@ -21,6 +21,7 @@ const PLACES = [
   { alias: "CELUPAZ JAC ALTOS DE MONTEBELLO",      entrada: "PQHH+24W, San Salvador", category: "JAC", url: "https://www.instagram.com/jac.altosdemontebello/" },
   { alias: "CELUPAZ JAC ALTOS DE MONTEBELLO 2",      entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jac.altos2/" },
   { alias: "CELUPAZ JAC ESCORIAL",  entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jacescorial/" },
+  { alias: "CELUPAZ JAC AYUTUXTEPEQUE", entrada: "PQPR+3WW, Mejicanos", category: "JAC", url: "https://www.instagram.com/jac.ayutuxtepeque/" },
 
   // JÓVENES
   { alias: "PW83+M4 Ilopango", entrada: "PW83+M4, Ilopango", category: "JOVENES", url: "https://www.facebook.com/" },
