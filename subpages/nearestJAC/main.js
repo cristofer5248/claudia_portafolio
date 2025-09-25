@@ -12,7 +12,11 @@ function fmtDur(s){
 const PLACES = [
   // JAC
   { alias: "CELUPAZ JAC MONTEBELLO", entrada: "PQGJ+VJF, San Salvador", category: "JAC", url: "https://www.instagram.com/jacsatelite/" },
-  { alias: "CELUPAZ JAC SATÉLITE",   entrada: "PQGJ+6M6, Calle Sierra Madre, San Salvador", category: "JAC", url: "https://www.instagram.com/jac_montebello/" },
+  { alias: "CELUPAZ JAC SATÉLITE",   entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jac_montebello/" },
+  { alias: "CELUPAZ JAC MONSERAT",      entrada: "MQJP+J9X San Salvador", category: "JAC", url: "https://www.instagram.com/jac.monserrat/" },
+  { alias: "CELUPAZ JAC ALTOS DE MONTEBELLO",      entrada: "PQHH+24W, San Salvador", category: "JAC", url: "https://www.instagram.com/jac.altosdemontebello/" },
+  { alias: "CELUPAZ JAC ALTOS DE MONTEBELLO 2",      entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jac.altos2/" },
+  { alias: "CELUPAZ JAC ESCORIAL",  entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jacescorial/" },
 
   // JÓVENES
   { alias: "PW83+M4 Ilopango", entrada: "PW83+M4, Ilopango", category: "JOVENES", url: "https://www.facebook.com/" },
