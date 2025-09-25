@@ -24,6 +24,7 @@ th, td { border-bottom: 1px solid #eee; text-align: left; padding: 8px; font-siz
 }
 .icon-btn:hover { background: #ffecec; }
 .icon-btn:active { transform: scale(0.97); }
+#gpsMsg {color:green; font-size: medium; font-weight: bold;}
 
 .chips { display:flex; gap:12px; align-items:center; margin-top:6px; }
 .chips label { font-weight: 500; display:inline-flex; gap:6px; align-items:center; margin-top:0; }
