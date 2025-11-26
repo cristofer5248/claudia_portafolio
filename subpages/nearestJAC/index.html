@@ -2,93 +2,105 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Nearest con GPS (Distance Matrix)</title>
+  <title>Encuentra tu Célula más Cercana - JAC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="style.css" rel="stylesheet" />
 </head>
 <body>
-  <h1>Ubicación más cercana (manual o GPS)</h1>
+  <div class="container">
+    <!-- Header con versículo bíblico -->
+    <header class="header">
+      <h1 class="header-title">Encuentra tu Célula más Cercana</h1>
+      <p class="header-subtitle">Conecta con tu comunidad de fe</p>
+      <p class="header-verse">"Porque donde están dos o tres reunidos en mi nombre, allí estoy yo en medio de ellos" - Mateo 18:20</p>
+    </header>
 
- <link href="style.css" rel="stylesheet" />
-
-<div class="card">
-  <div class="row">
-    <div>
-      <label for="origin">Origen (tu ubicación)</label>
-      <div class="inline">
-        <input id="origin" placeholder="Ej: El Salvador Escalón o 13.69,-89.24" />
-        <!-- Icono GPS (contorno rojo) -->
-        <button id="btnGps" class="icon-btn" title="Usar mi ubicación actual" aria-label="Usar mi ubicación">
-          <!-- SVG ubicación -->
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
-            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"></circle>
-            <line x1="12" y1="1" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="1" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="19" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-          </svg>
-        </button>
+    <!-- Card principal -->
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="origin">📍 Tu ubicación</label>
+          <div class="inline">
+            <input id="origin" placeholder="Ej: Colonia Escalón, San Salvador" />
+            <!-- Botón GPS -->
+            <button id="btnGps" class="icon-btn" title="Usar mi ubicación actual" aria-label="Usar mi ubicación">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                <line x1="12" y1="1" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+                <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+                <line x1="1" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+                <line x1="19" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="tiny muted" id="gpsMsg"></div>
+        </div>
+        <div>
+          <label for="mode">🚗 Modo de viaje</label>
+          <select id="mode">
+            <option value="DRIVING" selected>🚗 Conduciendo</option>
+            <option value="WALKING">🚶 Caminando</option>
+            <option value="BICYCLING">🚴 Bicicleta</option>
+            <option value="TRANSIT">🚌 Transporte público</option>
+          </select>
+        </div>
       </div>
-      <div class="tiny muted" id="gpsMsg"></div>
-    </div>
-    <div>
-      <label for="mode">Modo de viaje</label>
-      <select id="mode">
-        <option value="DRIVING" selected>Conduciendo</option>
-        <option value="WALKING">Caminando</option>
-        <option value="BICYCLING">Bicicleta</option>
-        <option value="TRANSIT">Transporte público</option>
-      </select>
-    </div>
-  </div>
 
-  <!-- Filtros de categoría -->
-  <div class="row">
-    <div>
-      <label>Categorías a incluir</label>
-      <div class="chips">
-        <label><input type="checkbox" class="cat" value="JAC" checked> JAC</label>
-        <label><input type="checkbox" class="cat" value="JOVENES"> JÓVENES</label>
+      <!-- Filtros de categoría -->
+      <div class="row">
+        <div>
+          <label>Tipo de célula</label>
+          <div class="chips">
+            <label>
+              <input type="checkbox" class="cat" value="JAC" checked>
+              JAC
+            </label>
+            <label>
+              <input type="checkbox" class="cat" value="JOVENES">
+              JÓVENES
+            </label>
+          </div>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="run">🔍 Buscar Célula Cercana</button>
+        </div>
       </div>
+
+      <!-- Opciones de tráfico -->
+      <div class="row compact">
+        <label>
+          <input type="checkbox" id="traffic" checked>
+          ⚡ Considerar tráfico actual (solo conduciendo)
+        </label>
+        <div>
+          <label for="trafficModel" class="sr-only">Modelo de tráfico</label>
+          <select id="trafficModel">
+            <option value="bestguess" selected>Estimado</option>
+            <option value="pessimistic">Pesimista</option>
+            <option value="optimistic">Optimista</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="msg" class="tiny muted"></div>
     </div>
-    <div>
-      <label>&nbsp;</label>
-      <button id="run">Calcular más cercano</button>
-    </div>
+
+    <!-- Resultado más cercano -->
+    <div id="nearest" class="card" style="display:none;"></div>
+    
+    <!-- Ranking completo -->
+    <div id="ranking" class="card" style="display:none;"></div>
+
+    <!-- Editor de destinos (oculto) -->
+    <label for="destEditor" style="display:none;">Destinos</label>
+    <textarea id="destEditor" rows="8" class="mono tiny" style="display:none;"></textarea>
+    <button id="saveDest" style="display:none;">Guardar</button>
+    <div id="saveMsg" style="display:none;"></div>
   </div>
 
-  <!-- Editor de destinos etiquetados -->
-  <label for="destEditor">Destinos (Nombre || Dirección/PlusCode || Categoría)</label>
-  <textarea id="destEditor" rows="8" class="mono tiny"
-    placeholder="Ejemplo:
-CELUPAZ JAC MONTEBELLO || PQGJ+VJF, San Salvador || JAC
-PW83+M4 Ilopango || PW83+M4, Ilopango || JOVENES"></textarea>
-
-  <div class="row">
-    <button id="saveDest">Guardar destinos</button>
-    <div class="tiny muted" id="saveMsg"></div>
-  </div>
-
-  <div class="row compact">
-    <label><input type="checkbox" id="traffic" checked> Usar tráfico (solo DRIVING)</label>
-    <div>
-      <label for="trafficModel" class="sr-only">Modelo de tráfico</label>
-      <select id="trafficModel">
-        <option value="bestguess" selected>best_guess</option>
-        <option value="pessimistic">pessimistic</option>
-        <option value="optimistic">optimistic</option>
-      </select>
-    </div>
-  </div>
-
-  <div id="msg" class="tiny muted" style="margin-top:8px;"></div>
-</div>
-
-  <div id="nearest" class="card" style="display:none;"></div>
-  <div id="ranking" class="card" style="display:none;"></div>
-
-  <!-- Maps JavaScript API -->
+  <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjXdrg6sNdLjmDQ91gfC2LOCyXVgspV8E&language=es&region=SV"></script>
   <script src="main.js"></script>
 </body>

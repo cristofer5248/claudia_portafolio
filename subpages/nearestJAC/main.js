@@ -8,6 +8,25 @@ function fmtDur(s){
   return r ? `${h} h ${r} min` : `${h} h`;
 }
 
+// Función para animar la aparición de elementos
+function animateElement(element, animationClass = 'fadeInUp') {
+  element.style.display = 'block';
+  element.style.animation = 'none';
+  setTimeout(() => {
+    element.style.animation = `${animationClass} 0.6s ease`;
+  }, 10);
+}
+
+// Función para mostrar mensajes con animación
+function showMessage(text, type = 'info') {
+  const msg = $("#msg");
+  msg.textContent = text;
+  msg.className = 'tiny';
+  if (type === 'error') msg.classList.add('err');
+  if (type === 'success') msg.style.color = 'var(--celestial-dark)';
+  msg.style.animation = 'fadeIn 0.3s ease';
+}
+
 // ========= lugares internos (ocultos) =========
 // alias: lo que se muestra al usuario
 // entrada: dirección / plus code que se manda a Distance Matrix
@@ -49,28 +68,37 @@ function reverseGeocode(lat, lng) {
   });
 }
 
-// ========= botón GPS (icono rojo) =========
+// ========= botón GPS (icono celeste) =========
 $("#btnGps").addEventListener("click", () => {
   const btn = $("#btnGps");
   const out = $("#gpsMsg");
   out.textContent = "";
   if (!("geolocation" in navigator)) {
-    out.textContent = "Este navegador no soporta geolocalización.";
+    out.textContent = "❌ Este navegador no soporta geolocalización.";
+    out.style.color = '#E53E3E';
     return;
   }
   btn.disabled = true;
+  btn.style.opacity = '0.6';
+  out.textContent = "📍 Obteniendo tu ubicación...";
+  out.style.color = 'var(--celestial-dark)';
 
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
     ORIGIN_GPS = { lat: +latitude.toFixed(6), lng: +longitude.toFixed(6) }; // guardado en memoria
     ORIGIN_LABEL = await reverseGeocode(ORIGIN_GPS.lat, ORIGIN_GPS.lng) || "Ubicación actual";
     // Confirmamos sin mostrar coords
-    out.textContent = `Ubicación establecida (cerca de: ${ORIGIN_LABEL}).`;
+    out.textContent = `✅ Ubicación establecida (${ORIGIN_LABEL})`;
+    out.style.color = 'var(--celestial-dark)';
+    out.style.animation = 'fadeIn 0.3s ease';
     btn.disabled = false;
+    btn.style.opacity = '1';
   }, (err) => {
     btn.disabled = false;
-    const map = {1:"Permiso denegado.",2:"Posición no disponible.",3:"Tiempo de espera agotado."};
-    out.textContent = map[err.code] || `Error: ${err.message}`;
+    btn.style.opacity = '1';
+    const map = {1:"❌ Permiso denegado.",2:"❌ Posición no disponible.",3:"❌ Tiempo de espera agotado."};
+    out.textContent = map[err.code] || `❌ Error: ${err.message}`;
+    out.style.color = '#E53E3E';
   }, { enableHighAccuracy:true, timeout:10000, maximumAge:10000 });
 });
 
@@ -87,11 +115,14 @@ $("#run").addEventListener("click", () => {
 
   if (ORIGIN_GPS) {
     origins = [ new google.maps.LatLng(ORIGIN_GPS.lat, ORIGIN_GPS.lng) ];
-    origenVisible = `GPS · cerca de: ${ORIGIN_LABEL || "Ubicación actual"}`;
+    origenVisible = `📍 GPS · ${ORIGIN_LABEL || "Ubicación actual"}`;
   } else {
-    if (!originManual) { $("#msg").textContent = "Escribe un origen o usa el botón de ubicación."; return; }
+    if (!originManual) { 
+      showMessage("⚠️ Por favor, escribe un origen o usa el botón de ubicación.", 'error');
+      return;
+    }
     origins = [ originManual ];
-    origenVisible = originManual;
+    origenVisible = `📍 ${originManual}`;
   }
 
   // Categorías seleccionadas
@@ -99,10 +130,16 @@ $("#run").addEventListener("click", () => {
 
   // Filtrar lugares por categoría
   const selected = PLACES.filter(p => cats.includes(p.category));
-  if (!selected.length) { $("#msg").textContent = "No hay destinos en las categorías seleccionadas."; return; }
-  if (selected.length > 25) { $("#msg").textContent = "Máximo 25 destinos por llamada (reduce categorías)."; return; }
+  if (!selected.length) { 
+    showMessage("⚠️ Por favor, selecciona al menos una categoría (JAC o JÓVENES).", 'error');
+    return;
+  }
+  if (selected.length > 25) { 
+    showMessage("⚠️ Máximo 25 destinos por llamada. Reduce las categorías seleccionadas.", 'error');
+    return;
+  }
 
-  $("#msg").textContent = "Consultando Distance Matrix…";
+  showMessage("🔍 Consultando rutas y calculando distancias...", 'info');
   $("#nearest").style.display = "none";
   $("#ranking").style.display = "none";
 
@@ -120,7 +157,10 @@ $("#run").addEventListener("click", () => {
   }
 
   service.getDistanceMatrix(req, (res, status) => {
-    if (status !== "OK") { $("#msg").textContent = `Error: ${status}`; return; }
+    if (status !== "OK") { 
+      showMessage(`❌ Error al consultar rutas: ${status}`, 'error');
+      return;
+    }
 
     const elements = res.rows?.[0]?.elements || [];
     const resolved  = res.destinationAddresses || [];
@@ -149,20 +189,40 @@ $("#run").addEventListener("click", () => {
       // URL de Google Maps sin origin= (no exponemos ubicación)
       const gmUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(nearest.entrada)}&travelmode=${mode.toLowerCase()}`;
 
+      // Icono de categoría
+      const categoryIcon = nearest.category === 'JAC' 
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>'
+        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+
       $("#nearest").innerHTML = `
-        <h2>Más cercano</h2>
-        <div><span class="ok">${linkAlias}</span> <span class="tiny muted">(${nearest.category})</span></div>
-        <div class="tiny muted">Origen: ${origenVisible}</div>
-        <div class="tiny muted">${nearest.display}</div>
-        <div style="margin-top:6px;">Distancia: <b>${kms(nearest.distanceMeters)} km</b></div>
-        <div>Duración aprox.: <b>${fmtDur(nearest.durationSec)}</b></div>
-        <div style="margin-top:8px;">
-          <a target="_blank" rel="noopener" href="${gmUrl}">Abrir en Google Maps ➜</a>
+        <h2>✨ Célula más cercana</h2>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          ${categoryIcon}
+          <span class="ok" style="font-size:1.2rem;">${linkAlias}</span>
+          <span class="tiny muted">(${nearest.category})</span>
+        </div>
+        <div class="tiny muted" style="margin-bottom:4px;">${origenVisible}</div>
+        <div class="tiny muted" style="margin-bottom:12px;">📌 ${nearest.display}</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0;">
+          <div style="background:var(--celestial-lighter); padding:12px; border-radius:10px; text-align:center;">
+            <div class="tiny muted">Distancia</div>
+            <div style="font-size:1.3rem; font-weight:700; color:var(--celestial-dark);">${kms(nearest.distanceMeters)} km</div>
+          </div>
+          <div style="background:var(--celestial-lighter); padding:12px; border-radius:10px; text-align:center;">
+            <div class="tiny muted">Duración aprox.</div>
+            <div style="font-size:1.3rem; font-weight:700; color:var(--celestial-dark);">${fmtDur(nearest.durationSec)}</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <a target="_blank" rel="noopener" href="${gmUrl}" 
+             style="display:inline-block; padding:12px 24px; background:var(--celestial-gradient); color:white; text-decoration:none; border-radius:50px; font-weight:600; box-shadow:var(--shadow-md); transition:all 0.3s ease;">
+            🗺️ Ver ruta en Google Maps
+          </a>
         </div>`;
-      $("#nearest").style.display = "block";
+      animateElement($("#nearest"));
     } else {
-      $("#nearest").innerHTML = `<span class="err">No hay rutas disponibles.</span>`;
-      $("#nearest").style.display = "block";
+      $("#nearest").innerHTML = `<div style="text-align:center; padding:20px;"><span class="err" style="font-size:1.1rem;">❌ No hay rutas disponibles para los destinos seleccionados.</span></div>`;
+      animateElement($("#nearest"));
     }
 
     // ====== render: ranking ======
@@ -171,34 +231,44 @@ $("#run").addEventListener("click", () => {
         ? `<a href="${r.url}" target="_blank" rel="noopener">${r.alias}</a>`
         : r.alias;
 
+      // Medalla para los primeros 3
+      let medal = '';
+      if (r.status === "OK") {
+        if (idx === 0) medal = '🥇';
+        else if (idx === 1) medal = '🥈';
+        else if (idx === 2) medal = '🥉';
+      }
+
       if (r.status === "OK") {
         return `<tr>
-          <td>${String(idx+1).padStart(2,"0")}</td>
+          <td style="text-align:center; font-size:1.1rem;">${medal || String(idx+1).padStart(2,"0")}</td>
           <td><b>${linkAlias}</b> <span class="tiny muted">(${r.category})</span>
-              <div class="tiny muted">${r.display}</div></td>
-          <td>${kms(r.distanceMeters)} km</td>
-          <td>~ ${fmtDur(r.durationSec)}</td>
+              <div class="tiny muted" style="margin-top:4px;">📌 ${r.display}</div></td>
+          <td style="font-weight:600; color:var(--celestial-dark);">${kms(r.distanceMeters)} km</td>
+          <td style="font-weight:600; color:var(--celestial-dark);">⏱️ ${fmtDur(r.durationSec)}</td>
         </tr>`;
       } else {
-        return `<tr>
-          <td>${String(idx+1).padStart(2,"0")}</td>
+        return `<tr style="opacity:0.6;">
+          <td style="text-align:center;">${String(idx+1).padStart(2,"0")}</td>
           <td><b>${linkAlias}</b> <span class="tiny muted">(${r.category})</span>
-              <div class="tiny muted">${r.display}</div></td>
+              <div class="tiny muted" style="margin-top:4px;">📌 ${r.display}</div></td>
           <td colspan="2"><span class="err">${r.status}</span></td>
         </tr>`;
       }
     }).join("");
 
-    const cats = [...document.querySelectorAll(".cat:checked")].map(c => c.value.toUpperCase());
     $("#ranking").innerHTML = `
-      <h2>Ranking (por distancia)</h2>
-      <div class="tiny muted" style="margin-bottom:6px;">Origen: ${origenVisible}</div>
+      <h2>📊 Ranking completo (ordenado por distancia)</h2>
+      <div class="tiny muted" style="margin-bottom:12px;">${origenVisible}</div>
       <table>
-        <thead><tr><th>#</th><th>Destino</th><th>Distancia</th><th>Duración</th></tr></thead>
+        <thead><tr><th style="text-align:center;">#</th><th>Célula</th><th>Distancia</th><th>Duración</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
-      <div class="tiny muted" style="margin-top:6px;">Categorías activas: ${cats.join(", ")}</div>`;
-    $("#ranking").style.display = "block";
-    $("#msg").textContent = "";
+      <div class="tiny muted" style="margin-top:12px; padding:10px; background:var(--celestial-lighter); border-radius:8px;">
+        📋 Categorías mostradas: <b>${cats.join(", ")}</b>
+      </div>`;
+    
+    setTimeout(() => animateElement($("#ranking")), 100);
+    showMessage("✅ Búsqueda completada con éxito", 'success');
   });
 });
