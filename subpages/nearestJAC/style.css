@@ -346,12 +346,12 @@ textarea.mono {
 
 /* Icono JAC - Cruz con círculo (puedes cambiar después) */
 .chips label:has(input[value="JAC"])::before {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234A90E2" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>');
+  background-image: url('img/jac.ico');
 }
 
 /* Icono JÓVENES - Grupo de personas (puedes cambiar después) */
 .chips label:has(input[value="JOVENES"])::before {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%237CB3E9" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>');
+  background-image: url('img/jovenes.ico');
 }
 
 .chips input[type="checkbox"] {
@@ -502,4 +502,51 @@ tbody tr:last-child {
   .card { padding: 18px; }
   .chips { gap: 10px; }
   .chips label { padding: 8px 14px; font-size: 0.9rem; }
+}
+
+/* ========== Wizard styles ========== */
+.wizard-steps {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.wizard-step {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #f1f7ff;
+  color: var(--text-secondary);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s ease;
+}
+.wizard-step.active {
+  background: var(--celestial-gradient);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.wizard-footer {
+  display:flex; gap:12px; justify-content:flex-end; margin-top:18px; align-items:center;
+}
+.wizard-btn { padding: 10px 18px; border-radius: 999px; border:none; cursor:pointer; font-weight:700; }
+.wizard-btn.ghost { background: transparent; color:var(--celestial-dark); border: 2px solid #E2E8F0; }
+
+/* Map container */
+#map {
+  width: 100%;
+  height: 320px;
+  border-radius: 12px;
+  margin-top: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* small helper for step content */
+.step-content { animation: fadeInUp 0.45s ease; }
+
+@media (max-width: 480px) {
+  #map { height: 220px; }
+  .wizard-footer { justify-content: stretch; flex-direction: column-reverse; gap:8px; }
 }

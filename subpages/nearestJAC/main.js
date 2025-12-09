@@ -27,6 +27,51 @@ function showMessage(text, type = 'info') {
   msg.style.animation = 'fadeIn 0.3s ease';
 }
 
+// Wizard state
+let WIZARD_STEP = 1; // 1 = origen, 2 = categoría, 3 = resultados
+
+// Map variables
+let MAP = null;
+let MAP_MARKERS = [];
+
+function clearMarkers(){
+  MAP_MARKERS.forEach(m => m.setMap(null));
+  MAP_MARKERS = [];
+}
+
+function setMapContainer(){
+  if (!$("#map")){
+    const mapEl = document.createElement('div');
+    mapEl.id = 'map';
+    const ranking = $("#ranking");
+    ranking.parentNode.insertBefore(mapEl, ranking);
+  }
+}
+
+function initMap(center){
+  setMapContainer();
+  if (!MAP){
+    MAP = new google.maps.Map(document.getElementById('map'), { zoom: 13, center: center || {lat:13.6929, lng:-89.2182}, disableDefaultUI: false });
+  } else if (center){
+    MAP.setCenter(center);
+    MAP.setZoom(13);
+  }
+}
+
+function addMarker(position, title, icon){
+  if (!MAP) initMap(position);
+  const m = new google.maps.Marker({ position, map: MAP, title, icon });
+  MAP_MARKERS.push(m);
+  return m;
+}
+
+function fitMapToMarkers(){
+  if (!MAP || !MAP_MARKERS.length) return;
+  const bounds = new google.maps.LatLngBounds();
+  MAP_MARKERS.forEach(m => bounds.extend(m.getPosition()));
+  MAP.fitBounds(bounds);
+}
+
 // ========= lugares internos (ocultos) =========
 // alias: lo que se muestra al usuario
 // entrada: dirección / plus code que se manda a Distance Matrix
@@ -56,6 +101,7 @@ const PLACES = [
 // ========= estado privado del origen (no se imprime coords) =========
 let ORIGIN_GPS = null;   // { lat, lng }
 let ORIGIN_LABEL = null; // "cerca de: Plaza Mundo, San Salvador"
+let AUTOCOMP = null;
 
 // Reverse geocoding para mostrar un label sin exponer coords
 function reverseGeocode(lat, lng) {
@@ -68,7 +114,34 @@ function reverseGeocode(lat, lng) {
   });
 }
 
+function geocodeAddress(address){
+  return new Promise((resolve, reject)=>{
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address, region: 'SV' }, (results, status) => {
+      if (status === 'OK' && results[0]) resolve(results[0]);
+      else reject(status);
+    });
+  });
+}
+
 // ========= botón GPS (icono celeste) =========
+// Inicializa Autocomplete para el input de origen (restringido a El Salvador)
+function setupAutocomplete(){
+  const input = document.getElementById('origin');
+  if (!input || !google?.maps?.places) return;
+  AUTOCOMP = new google.maps.places.Autocomplete(input, { componentRestrictions: { country: 'sv' }, fields: ['formatted_address','geometry','name'] });
+  AUTOCOMP.addListener('place_changed', async ()=>{
+    const place = AUTOCOMP.getPlace();
+    if (place?.geometry?.location){
+      ORIGIN_GPS = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+      ORIGIN_LABEL = place.formatted_address || place.name || 'Ubicación seleccionada';
+      showMessage(`📍 Origen seleccionado: ${ORIGIN_LABEL}`, 'success');
+      initMap(ORIGIN_GPS);
+      clearMarkers(); addMarker(ORIGIN_GPS, 'Origen');
+    }
+  });
+}
+
 $("#btnGps").addEventListener("click", () => {
   const btn = $("#btnGps");
   const out = $("#gpsMsg");
@@ -93,6 +166,8 @@ $("#btnGps").addEventListener("click", () => {
     out.style.animation = 'fadeIn 0.3s ease';
     btn.disabled = false;
     btn.style.opacity = '1';
+    initMap(ORIGIN_GPS);
+    clearMarkers(); addMarker(ORIGIN_GPS, 'Origen');
   }, (err) => {
     btn.disabled = false;
     btn.style.opacity = '1';
@@ -103,98 +178,77 @@ $("#btnGps").addEventListener("click", () => {
 });
 
 // ========= calcular nearest =========
-$("#run").addEventListener("click", () => {
+$("#run").addEventListener("click", async () => {
+  // New wizard flow: validate step inputs and run search when on step 3
   const mode = $("#mode").value;
   const useTraffic = $("#traffic").checked;
   const trafficModel = $("#trafficModel").value;
 
-  // Origen: preferimos GPS; si no, el manual
+  // Determine origin for Distance Matrix: prefer ORIGIN_GPS when available, otherwise the textual origin
   const originManual = $("#origin").value.trim();
-  let origins;         // lo que enviamos a Distance Matrix
-  let origenVisible;   // lo que mostramos al usuario (sin coords)
+  let origins;
+  let origenVisible;
 
   if (ORIGIN_GPS) {
     origins = [ new google.maps.LatLng(ORIGIN_GPS.lat, ORIGIN_GPS.lng) ];
-    origenVisible = `📍 GPS · ${ORIGIN_LABEL || "Ubicación actual"}`;
+    origenVisible = `📍 ${ORIGIN_LABEL || "Ubicación actual"}`;
   } else {
-    if (!originManual) { 
-      showMessage("⚠️ Por favor, escribe un origen o usa el botón de ubicación.", 'error');
-      return;
-    }
+    if (!originManual) { showMessage("⚠️ Por favor, escribe un origen o usa el botón de ubicación.", 'error'); return; }
     origins = [ originManual ];
     origenVisible = `📍 ${originManual}`;
+    // attempt to geocode for map
+    try {
+      const geo = await geocodeAddress(originManual);
+      ORIGIN_GPS = { lat: geo.geometry.location.lat(), lng: geo.geometry.location.lng() };
+      ORIGIN_LABEL = geo.formatted_address || originManual;
+      initMap(ORIGIN_GPS);
+      clearMarkers(); addMarker(ORIGIN_GPS, 'Origen');
+    } catch(e){ /* keep textual origin if geocode fails */ }
   }
 
-  // Categorías seleccionadas
-  const cats = [...document.querySelectorAll(".cat:checked")].map(c => c.value.toUpperCase());
-
-  // Filtrar lugares por categoría
+  // Categories
+  const cats = [...document.querySelectorAll('.cat:checked')].map(c => c.value.toUpperCase());
   const selected = PLACES.filter(p => cats.includes(p.category));
-  if (!selected.length) { 
-    showMessage("⚠️ Por favor, selecciona al menos una categoría (JAC o JÓVENES).", 'error');
-    return;
-  }
-  if (selected.length > 25) { 
-    showMessage("⚠️ Máximo 25 destinos por llamada. Reduce las categorías seleccionadas.", 'error');
-    return;
-  }
+  if (!selected.length) { showMessage('⚠️ Selecciona al menos una categoría.', 'error'); return; }
+  if (selected.length > 25) { showMessage('⚠️ Máximo 25 destinos por llamada.', 'error'); return; }
 
-  showMessage("🔍 Consultando rutas y calculando distancias...", 'info');
-  $("#nearest").style.display = "none";
-  $("#ranking").style.display = "none";
+  showMessage('🔍 Consultando rutas y calculando distancias...');
+  $('#nearest').style.display = 'none'; $('#ranking').style.display = 'none';
 
   const service = new google.maps.DistanceMatrixService();
   const req = {
-    origins,                                      // <- importante: usar la variable 'origins'
+    origins,
     destinations: selected.map(p => p.entrada),
     travelMode: google.maps.TravelMode[mode],
     unitSystem: google.maps.UnitSystem.METRIC,
-    language: "es",
-    region: "SV"
+    language: 'es', region: 'SV'
   };
-  if (mode === "DRIVING" && useTraffic) {
-    req.drivingOptions = { departureTime: new Date(), trafficModel };
-  }
+  if (mode === 'DRIVING' && useTraffic) req.drivingOptions = { departureTime: new Date(), trafficModel };
 
-  service.getDistanceMatrix(req, (res, status) => {
-    if (status !== "OK") { 
-      showMessage(`❌ Error al consultar rutas: ${status}`, 'error');
-      return;
-    }
+  service.getDistanceMatrix(req, async (res, status) => {
+    if (status !== 'OK') { showMessage(`❌ Error al consultar rutas: ${status}`, 'error'); return; }
 
     const elements = res.rows?.[0]?.elements || [];
-    const resolved  = res.destinationAddresses || [];
-
-    const rows = elements.map((el, i) => {
+    const resolved = res.destinationAddresses || [];
+    const rows = elements.map((el,i)=>{
       const item = selected[i];
       const display = (resolved[i] && resolved[i].trim()) || item.entrada;
-
-      if (el.status !== "OK") {
-        return { ...item, display, status: el.status, distanceMeters: Infinity, durationSec: Infinity };
-      }
+      if (el.status !== 'OK') return { ...item, display, status: el.status, distanceMeters: Infinity, durationSec: Infinity };
       const dist = el.distance?.value ?? Infinity;
-      const dur  = (el.duration_in_traffic?.value ?? el.duration?.value ?? Infinity);
-      return { ...item, display, status: "OK", distanceMeters: dist, durationSec: dur };
+      const dur = (el.duration_in_traffic?.value ?? el.duration?.value ?? Infinity);
+      return { ...item, display, status: 'OK', distanceMeters: dist, durationSec: dur };
     });
 
     rows.sort((a,b)=> a.distanceMeters - b.distanceMeters);
-    const nearest = rows.find(r => r.status === "OK");
+    const nearest = rows.find(r => r.status === 'OK');
 
-    // ====== render: más cercano (alias clickeable con url) ======
-    if (nearest) {
-      const linkAlias = nearest.url
-        ? `<a href="${nearest.url}" target="_blank" rel="noopener">${nearest.alias}</a>`
-        : nearest.alias;
-
-      // URL de Google Maps sin origin= (no exponemos ubicación)
+    // Render nearest
+    if (nearest){
+      const linkAlias = nearest.url ? `<a href="${nearest.url}" target="_blank" rel="noopener">${nearest.alias}</a>` : nearest.alias;
       const gmUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(nearest.entrada)}&travelmode=${mode.toLowerCase()}`;
+      const categoryIcon = nearest.category === 'JAC' ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
 
-      // Icono de categoría
-      const categoryIcon = nearest.category === 'JAC' 
-        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>'
-        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
-
-      $("#nearest").innerHTML = `
+      $('#nearest').innerHTML = `
         <h2>✨ Célula más cercana</h2>
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
           ${categoryIcon}
@@ -219,45 +273,46 @@ $("#run").addEventListener("click", () => {
             🗺️ Ver ruta en Google Maps
           </a>
         </div>`;
-      animateElement($("#nearest"));
+
+      animateElement($('#nearest'));
+
+      // Try to geocode the destination to show marker
+      try {
+        const destGeo = await geocodeAddress(nearest.entrada);
+        const pos = { lat: destGeo.geometry.location.lat(), lng: destGeo.geometry.location.lng() };
+        clearMarkers();
+        if (ORIGIN_GPS) addMarker(ORIGIN_GPS, 'Origen', null);
+        addMarker(pos, nearest.alias, null);
+        fitMapToMarkers();
+      } catch(e){ /* ignore geocode failure */ }
+
     } else {
-      $("#nearest").innerHTML = `<div style="text-align:center; padding:20px;"><span class="err" style="font-size:1.1rem;">❌ No hay rutas disponibles para los destinos seleccionados.</span></div>`;
-      animateElement($("#nearest"));
+      $('#nearest').innerHTML = `<div style="text-align:center; padding:20px;"><span class="err" style="font-size:1.1rem;">❌ No hay rutas disponibles para los destinos seleccionados.</span></div>`;
+      animateElement($('#nearest'));
     }
 
-    // ====== render: ranking ======
+    // Ranking
     const rowsHtml = rows.map((r, idx) => {
-      const linkAlias = r.url
-        ? `<a href="${r.url}" target="_blank" rel="noopener">${r.alias}</a>`
-        : r.alias;
-
-      // Medalla para los primeros 3
+      const linkAlias = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.alias}</a>` : r.alias;
       let medal = '';
-      if (r.status === "OK") {
-        if (idx === 0) medal = '🥇';
-        else if (idx === 1) medal = '🥈';
-        else if (idx === 2) medal = '🥉';
-      }
-
-      if (r.status === "OK") {
+      if (r.status === 'OK') { if (idx===0) medal='🥇'; else if (idx===1) medal='🥈'; else if (idx===2) medal='🥉'; }
+      if (r.status === 'OK'){
         return `<tr>
-          <td style="text-align:center; font-size:1.1rem;">${medal || String(idx+1).padStart(2,"0")}</td>
+          <td style="text-align:center; font-size:1.1rem;">${medal || String(idx+1).padStart(2,'0')}</td>
           <td><b>${linkAlias}</b> <span class="tiny muted">(${r.category})</span>
               <div class="tiny muted" style="margin-top:4px;">📌 ${r.display}</div></td>
           <td style="font-weight:600; color:var(--celestial-dark);">${kms(r.distanceMeters)} km</td>
           <td style="font-weight:600; color:var(--celestial-dark);">⏱️ ${fmtDur(r.durationSec)}</td>
         </tr>`;
       } else {
-        return `<tr style="opacity:0.6;">
-          <td style="text-align:center;">${String(idx+1).padStart(2,"0")}</td>
+        return `<tr style="opacity:0.6;"><td style="text-align:center;">${String(idx+1).padStart(2,'0')}</td>
           <td><b>${linkAlias}</b> <span class="tiny muted">(${r.category})</span>
               <div class="tiny muted" style="margin-top:4px;">📌 ${r.display}</div></td>
-          <td colspan="2"><span class="err">${r.status}</span></td>
-        </tr>`;
+          <td colspan="2"><span class="err">${r.status}</span></td></tr>`;
       }
-    }).join("");
+    }).join('');
 
-    $("#ranking").innerHTML = `
+    $('#ranking').innerHTML = `
       <h2>📊 Ranking completo (ordenado por distancia)</h2>
       <div class="tiny muted" style="margin-bottom:12px;">${origenVisible}</div>
       <table>
@@ -265,10 +320,10 @@ $("#run").addEventListener("click", () => {
         <tbody>${rowsHtml}</tbody>
       </table>
       <div class="tiny muted" style="margin-top:12px; padding:10px; background:var(--celestial-lighter); border-radius:8px;">
-        📋 Categorías mostradas: <b>${cats.join(", ")}</b>
+        📋 Categorías mostradas: <b>${cats.join(', ')}</b>
       </div>`;
-    
-    setTimeout(() => animateElement($("#ranking")), 100);
-    showMessage("✅ Búsqueda completada con éxito", 'success');
+
+    setTimeout(()=> animateElement($('#ranking')), 100);
+    showMessage('✅ Búsqueda completada con éxito', 'success');
   });
 });
