@@ -349,3 +349,108 @@ document.getElementById("generateBtn").addEventListener("click", async function 
     status.className = "success";
     this.disabled = false;
 });
+
+/**
+ * JUEGO INTERACTIVO - Ver Cartas una a una
+ */
+
+let gameState = {
+    allImages: [],
+    currentIndex: 0,
+    isPlaying: false
+};
+
+document.getElementById("playGameBtn").addEventListener("click", function () {
+    // Validar que existan 20 imágenes
+    const validImages = imagesData.filter(img => img && img.isValid);
+    
+    if (validImages.length !== 20) {
+        alert("Debes cargar las 20 imágenes antes de jugar.");
+        return;
+    }
+
+    // Mezclar las imágenes
+    gameState.allImages = shuffle(validImages);
+    gameState.currentIndex = 0;
+    gameState.isPlaying = true;
+
+    // Mostrar modal
+    const modal = document.getElementById("gameModal");
+    modal.classList.remove("hidden");
+
+    // Actualizar contador total
+    document.getElementById("gameTotalCards").textContent = "20";
+
+    // Mostrar primera imagen
+    showGameCard();
+});
+
+function showGameCard() {
+    if (gameState.currentIndex >= gameState.allImages.length) {
+        // Juego terminado
+        finishGame();
+        return;
+    }
+
+    const card = gameState.allImages[gameState.currentIndex];
+    const imgElement = document.getElementById("gameImage");
+    const nameElement = document.getElementById("gameImageName");
+    const counterElement = document.getElementById("gameCardNumber");
+    const nextBtn = document.getElementById("gameNextBtn");
+    const finishMessage = document.getElementById("gameFinishMessage");
+
+    // Ocultar mensaje de finalización
+    finishMessage.classList.add("hidden");
+
+    // Actualizar imagen y nombre
+    imgElement.src = card.src;
+    nameElement.textContent = card.title || card.fileName;
+    counterElement.textContent = gameState.currentIndex + 1;
+
+    // Re-trigger animación fade
+    imgElement.style.animation = "none";
+    setTimeout(() => {
+        imgElement.style.animation = "fadeIn 0.8s ease-in-out";
+    }, 10);
+
+    nextBtn.disabled = false;
+}
+
+function finishGame() {
+    const modal = document.getElementById("gameModal");
+    const finishMessage = document.getElementById("gameFinishMessage");
+    const imageWrapper = document.querySelector(".game-image-wrapper");
+    const buttons = document.querySelector(".game-buttons");
+
+    // Ocultar elementos de juego
+    imageWrapper.style.display = "none";
+    buttons.style.display = "none";
+
+    // Mostrar mensaje de finalización
+    finishMessage.classList.remove("hidden");
+
+    // Reproducir sonido de victoria (opcional, en consola)
+    console.log("🎉 ¡JUEGO COMPLETADO!");
+
+    gameState.isPlaying = false;
+}
+
+document.getElementById("gameNextBtn").addEventListener("click", function () {
+    if (!gameState.isPlaying) return;
+
+    // Descartar imagen actual y pasar a la siguiente
+    gameState.currentIndex++;
+    showGameCard();
+});
+
+document.getElementById("gameCloseBtn").addEventListener("click", function () {
+    const modal = document.getElementById("gameModal");
+    modal.classList.add("hidden");
+
+    // Restaurar vista del juego si se abre de nuevo
+    document.querySelector(".game-image-wrapper").style.display = "flex";
+    document.querySelector(".game-buttons").style.display = "flex";
+    document.getElementById("gameFinishMessage").classList.add("hidden");
+
+    gameState.isPlaying = false;
+});

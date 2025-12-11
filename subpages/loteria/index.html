@@ -35,10 +35,45 @@
         </div>
 
         <button id="generateBtn">📄 Generar PDFs</button>
+        <button id="playGameBtn">🎮 Jugar: Ver Cartas</button>
 
         <div id="cardsStatus"></div>
         <div id="progress" class="progress hidden">
             <div class="progress-bar" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA EL JUEGO DE CARTAS -->
+    <div id="gameModal" class="game-modal hidden">
+        <div class="game-overlay">
+            <div class="game-container">
+                <!-- Botón cerrar -->
+                <button class="game-close-btn" id="gameCloseBtn">&times;</button>
+
+                <!-- Contador de cartas -->
+                <div class="game-header">
+                    <div class="game-counter">
+                        Carta <span id="gameCardNumber">0</span> de <span id="gameTotalCards">20</span>
+                    </div>
+                </div>
+
+                <!-- Área de la imagen -->
+                <div class="game-image-wrapper">
+                    <img id="gameImage" src="" alt="Carta" class="game-image">
+                    <div id="gameImageName" class="game-image-name"></div>
+                </div>
+
+                <!-- Botones de control -->
+                <div class="game-buttons">
+                    <button id="gameNextBtn" class="game-btn game-btn-primary">SIGUIENTE →</button>
+                </div>
+
+                <!-- Mensaje de finalización -->
+                <div id="gameFinishMessage" class="game-finish-message hidden">
+                    <h2>¡JUEGO FINALIZADO!</h2>
+                    <p>Ya viste todas las 20 cartas</p>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -166,3 +166,231 @@ button:disabled {
 .hidden {
     display: none;
 }
+
+/* =============================================
+   MODAL PARA EL JUEGO DE CARTAS
+   ============================================= */
+
+.game-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+}
+
+.game-modal.hidden {
+    display: none;
+}
+
+.game-overlay {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.game-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.game-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-close-btn:hover {
+    background: #c0392b;
+}
+
+.game-header {
+    text-align: center;
+    width: 100%;
+}
+
+.game-counter {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    background: #ecf0f1;
+    padding: 15px 30px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.game-image-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    min-height: 400px;
+    justify-content: center;
+}
+
+.game-image {
+    max-width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.game-image-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+    max-width: 600px;
+    word-break: break-word;
+    background: #f0f0f0;
+    padding: 12px 20px;
+    border-radius: 8px;
+}
+
+.game-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.game-btn {
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.game-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    min-width: 200px;
+}
+
+.game-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.game-btn-primary:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.game-finish-message {
+    text-align: center;
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 15px;
+    width: 100%;
+    animation: slideIn 0.5s ease-out;
+}
+
+.game-finish-message h2 {
+    font-size: 48px;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.game-finish-message p {
+    font-size: 24px;
+    margin: 0;
+    opacity: 0.95;
+}
+
+.game-finish-message.hidden {
+    display: none;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .game-container {
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .game-image {
+        max-height: 300px;
+    }
+
+    .game-counter {
+        font-size: 18px;
+        padding: 10px 20px;
+    }
+
+    .game-btn {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+
+    .game-btn-primary {
+        min-width: 150px;
+    }
+
+    .game-finish-message h2 {
+        font-size: 32px;
+    }
+
+    .game-finish-message p {
+        font-size: 18px;
+    }
+}
