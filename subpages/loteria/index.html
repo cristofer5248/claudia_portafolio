@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotería 3x3 PDF - Generador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>🎲 Generador de Lotería 3x3 PDF</h1>
+
+    <div class="panel">
+        <h2>1️⃣ Subir 20 imágenes (JPG recomendado)</h2>
+        <div class="form-group">
+            <label for="filesInput">Selecciona 20 imágenes:</label>
+            <input type="file" id="filesInput" accept="image/*" multiple>
+            <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                <strong>Nota:</strong> Se recomienda usar imágenes .jpg desde tu computadora. 
+                Las imágenes de redes sociales pueden tener problemas de compatibilidad con PDF.
+            </p>
+        </div>
+
+        <div id="cardsStatus"></div>
+
+        <div id="thumbs" class="thumb-grid"></div>
+    </div>
+
+    <div class="panel">
+        <h2>2️⃣ Generar PDFs</h2>
+
+        <div class="form-group">
+            <label for="numCards">Total de cartones a generar:</label>
+            <input type="number" id="numCards" value="5" min="1" max="200">
+        </div>
+
+        <button id="generateBtn">📄 Generar PDFs</button>
+
+        <div id="cardsStatus"></div>
+        <div id="progress" class="progress hidden">
+            <div class="progress-bar" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Área oculta para renderizar los PDFs -->
+    <div id="pdfCanvas" class="hidden"></div>
+
+    <!-- CDN de librerías necesarias -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Script local -->
+    <script src="script.js"></script>
+
+</body>
+</html>
