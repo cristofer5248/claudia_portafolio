@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura - Postres Verito</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .invoice-container {
+            background-color: #fff;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+        .header img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        .business-info h1 {
+            margin: 5px 0;
+            color: #5a3e36; /* Tono café acorde a logos de repostería */
+        }
+        .business-info p {
+            margin: 2px 0;
+            color: #666;
+        }
+        .client-info {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #eee;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f8f8;
+            font-weight: 600;
+        }
+        .totals {
+            float: right;
+            width: 300px;
+            text-align: right;
+        }
+        .totals .row {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .grand-total {
+            font-size: 1.2em;
+            font-weight: bold;
+            border-top: 2px solid #333;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .actions {
+            clear: both;
+            text-align: center;
+            margin-top: 60px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+        }
+        button.delete-btn {
+            background-color: #ff4444;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .invoice-container { box-shadow: none; padding: 0; }
+            .no-print { display: none !important; }
+            input { border: none; padding: 0; }
+            #dateInput { display: none !important; }
+            #dateText { display: inline-block !important; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="invoice-container">
+    <div class="header">
+        <img src="logo.png" alt="Postres Verito Logo">
+        <div class="business-info">
+            <h1>Postres Verito</h1>
+            <p>Reparto Los Santos, Pje 14 block M, casa #22</p>
+            <p>Teléfono: 7865 0484</p>
+            <p>Email: reinademaldonado01@gmail.com</p>
+        </div>
+    </div>
+
+    <div class="client-info">
+        <div class="form-group">
+            <label>Cliente:</label>
+            <input type="text" placeholder="Nombre del cliente" style="width: 250px;">
+        </div>
+        <div class="form-group">
+            <label>Fecha:</label>
+            <input type="date" id="dateInput" onchange="updateFormattedDate()">
+            <span id="dateText" style="display:none;"></span>
+        </div>
+    </div>
+
+    <table id="invoiceTable">
+        <thead>
+            <tr>
+                <th width="40%">Producto</th>
+                <th width="15%">Cantidad</th>
+                <th width="20%">Precio Unitario</th>
+                <th width="20%">Total</th>
+                <th width="5%" class="no-print"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added by JS -->
+        </tbody>
+    </table>
+
+    <div class="actions no-print" style="text-align: left; margin-top: 10px; margin-bottom: 20px;">
+        <button onclick="addRow()" style="background-color: #2196F3;">+ Agregar Producto</button>
+    </div>
+
+    <div class="totals">
+        <div class="row">
+            <span>Subtotal:</span>
+            <span id="subtotal">$0.00</span>
+        </div>
+        <div class="row no-print">
+            <label for="ivaCheck" style="cursor:pointer;">Aplicar IVA (13%)</label>
+            <input type="checkbox" id="ivaCheck" onchange="calculateTotal()">
+        </div>
+        <div class="row" id="ivaRow" style="display:none;">
+            <span>IVA (13%):</span>
+            <span id="ivaAmount">$0.00</span>
+        </div>
+        <div class="row grand-total">
+            <span>Total:</span>
+            <span id="total">$0.00</span>
+        </div>
+    </div>
+
+    <div class="actions no-print">
+        <button onclick="window.print()">Imprimir Factura</button>
+        <button onclick="generatePDF()" style="background-color: #dc3545;">Descargar PDF</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('dateInput').valueAsDate = new Date();
+    updateFormattedDate();
+
+    function updateFormattedDate() {
+        const input = document.getElementById('dateInput');
+        const text = document.getElementById('dateText');
+        if (!input.value) return;
+        
+        const [year, month, day] = input.value.split('-');
+        const months = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+        text.textContent = `${day}/${months[parseInt(month) - 1]}/${year}`;
+    }
+
+    function addRow() {
+        const tbody = document.querySelector('#invoiceTable tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" placeholder="Descripción" style="width:100%"></td>
+            <td><input type="number" value="1" min="1" oninput="calculateTotal()" style="width:100%"></td>
+            <td><input type="number" value="0.00" step="0.01" min="0" oninput="calculateTotal()" style="width:100%"></td>
+            <td class="row-total">$0.00</td>
+            <td class="no-print"><button class="delete-btn" onclick="removeRow(this)">X</button></td>
+        `;
+        tbody.appendChild(tr);
+        calculateTotal();
+    }
+
+    function removeRow(btn) {
+        btn.closest('tr').remove();
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        let subtotal = 0;
+        const rows = document.querySelectorAll('#invoiceTable tbody tr');
+        
+        rows.forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            const qty = parseFloat(inputs[1].value) || 0;
+            const price = parseFloat(inputs[2].value) || 0;
+            const total = qty * price;
+            row.querySelector('.row-total').textContent = '$' + total.toFixed(2);
+            subtotal += total;
+        });
+
+        const hasIva = document.getElementById('ivaCheck').checked;
+        const ivaRow = document.getElementById('ivaRow');
+        let iva = 0;
+
+        if (hasIva) {
+            iva = subtotal * 0.13;
+            ivaRow.style.display = 'flex';
+        } else {
+            ivaRow.style.display = 'none';
+        }
+
+        document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+        document.getElementById('ivaAmount').textContent = '$' + iva.toFixed(2);
+        document.getElementById('total').textContent = '$' + (subtotal + iva).toFixed(2);
+    }
+
+    // Initialize with one row
+    addRow();
+
+    function generatePDF() {
+        const element = document.querySelector('.invoice-container');
+        const buttons = document.querySelectorAll('.no-print');
+        const dateInput = document.getElementById('dateInput');
+        const dateText = document.getElementById('dateText');
+        
+        // Ocultar botones temporalmente para que no salgan en el PDF
+        buttons.forEach(btn => btn.style.display = 'none');
+        // Cambiar input de fecha por texto formateado
+        dateInput.style.display = 'none';
+        dateText.style.display = 'inline-block';
+        
+        const opt = {
+            margin: 10,
+            filename: 'factura_postres_verito.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Restaurar botones
+            buttons.forEach(btn => btn.style.display = '');
+            // Restaurar input
+            dateInput.style.display = '';
+            dateText.style.display = 'none';
+        });
+    }
+</script>
+
+</body>
+</html>
