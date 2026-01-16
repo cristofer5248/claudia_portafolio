@@ -30,73 +30,16 @@ function showMessage(text, type = 'info') {
 // Wizard state
 let WIZARD_STEP = 1; // 1 = origen, 2 = categoría, 3 = resultados
 
-// Map variables
-let MAP = null;
-let MAP_MARKERS = [];
-
-function clearMarkers(){
-  MAP_MARKERS.forEach(m => m.setMap(null));
-  MAP_MARKERS = [];
-}
-
-function setMapContainer(){
-  if (!$("#map")){
-    const mapEl = document.createElement('div');
-    mapEl.id = 'map';
-    const ranking = $("#ranking");
-    ranking.parentNode.insertBefore(mapEl, ranking);
-  }
-}
-
-function initMap(center){
-  setMapContainer();
-  if (!MAP){
-    MAP = new google.maps.Map(document.getElementById('map'), { zoom: 13, center: center || {lat:13.6929, lng:-89.2182}, disableDefaultUI: false });
-  } else if (center){
-    MAP.setCenter(center);
-    MAP.setZoom(13);
-  }
-}
-
-function addMarker(position, title, icon){
-  if (!MAP) initMap(position);
-  const m = new google.maps.Marker({ position, map: MAP, title, icon });
-  MAP_MARKERS.push(m);
-  return m;
-}
-
-function fitMapToMarkers(){
-  if (!MAP || !MAP_MARKERS.length) return;
-  const bounds = new google.maps.LatLngBounds();
-  MAP_MARKERS.forEach(m => bounds.extend(m.getPosition()));
-  MAP.fitBounds(bounds);
-}
-
 // ========= lugares internos (ocultos) =========
-// alias: lo que se muestra al usuario
-// entrada: dirección / plus code que se manda a Distance Matrix
-// category: para filtros (JAC / JOVENES)
-// url: red social o web del lugar (se abre en nueva pestaña)
-const PLACES = [
-  // JAC
-  { alias: "CELUPAZ JAC MONTEBELLO", entrada: "PQGJ+VJF, San Salvador", category: "JAC", url: "https://www.instagram.com/jacsatelite/" },
-  { alias: "CELUPAZ JAC SATÉLITE",   entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jac_montebello/" },
-  { alias: "CELUPAZ JAC MONSERAT",      entrada: "MQJP+J9X San Salvador", category: "JAC", url: "https://www.instagram.com/jac.monserrat/" },
-  { alias: "CELUPAZ JAC ALTOS DE MONTEBELLO",      entrada: "PQHH+24W, San Salvador", category: "JAC", url: "https://www.instagram.com/jac.altosdemontebello/" },
-  { alias: "CELUPAZ JAC ALTOS DE MONTEBELLO 2",      entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jac.altos2/" },
-  { alias: "CELUPAZ JAC ESCORIAL",  entrada: "PQ9J+74 San Salvador", category: "JAC", url: "https://www.instagram.com/jacescorial/" },
-  { alias: "CELUPAZ JAC AYUTUXTEPEQUE", entrada: "PQPR+3WW, Mejicanos", category: "JAC", url: "https://www.instagram.com/jac.ayutuxtepeque/" },
-
-  // JÓVENES
-  { alias: "PW83+M4 Ilopango", entrada: "PW83+M4, Ilopango", category: "JOVENES", url: "https://www.facebook.com/" },
-  { alias: "Urbanización Sierra Morena 2", entrada: "PQ9J+74, San Salvador", category: "JOVENES", url: "https://www.instagram.com/" },
-
-  // (opcionales de tu lista)
-  { alias: "PQHH+24W San Salvador", entrada: "PQHH+24W, San Salvador", category: "JOVENES", url: "" },
-  { alias: "PQPR+3WW Mejicanos",    entrada: "PQPR+3WW, Mejicanos", category: "JOVENES", url: "" },
-  { alias: "12 Calle Poniente",     entrada: "MQWV+G6P, 12 Calle Poniente, San Salvador", category: "JOVENES", url: "" },
-  { alias: "16 Av. Sur (Santa Tecla)", entrada: "MPF3+65X, 16 Avenida Sur, Santa Tecla", category: "JOVENES", url: "" },
-];
+// Cargar datos desde JSON externo
+let PLACES = [];
+fetch('places.json')
+  .then(response => response.json())
+  .then(data => {
+    PLACES = data;
+    console.log('Lugares cargados:', PLACES.length);
+  })
+  .catch(err => showMessage('Error cargando la lista de lugares.', 'error'));
 
 // ========= estado privado del origen (no se imprime coords) =========
 let ORIGIN_GPS = null;   // { lat, lng }
@@ -132,13 +75,21 @@ function setupAutocomplete(){
   AUTOCOMP = new google.maps.places.Autocomplete(input, { componentRestrictions: { country: 'sv' }, fields: ['formatted_address','geometry','name'] });
   AUTOCOMP.addListener('place_changed', async ()=>{
     const place = AUTOCOMP.getPlace();
-    if (place?.geometry?.location){
-      ORIGIN_GPS = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
-      ORIGIN_LABEL = place.formatted_address || place.name || 'Ubicación seleccionada';
-      showMessage(`📍 Origen seleccionado: ${ORIGIN_LABEL}`, 'success');
-      initMap(ORIGIN_GPS);
-      clearMarkers(); addMarker(ORIGIN_GPS, 'Origen');
+    
+    // Si la API falla al obtener coordenadas (común si hay error de facturación) o es entrada manual
+    if (!place || !place.geometry) {
+      const val = input.value;
+      if (val) {
+        ORIGIN_LABEL = val;
+        ORIGIN_GPS = null; // Usaremos el texto para buscar al dar clic en el botón
+        showMessage(`📍 Ubicación: ${val}`, 'info');
+      }
+      return;
     }
+
+    ORIGIN_GPS = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+    ORIGIN_LABEL = place.formatted_address || place.name || 'Ubicación seleccionada';
+    showMessage(`📍 Origen seleccionado: ${ORIGIN_LABEL}`, 'success');
   });
 }
 
@@ -166,8 +117,6 @@ $("#btnGps").addEventListener("click", () => {
     out.style.animation = 'fadeIn 0.3s ease';
     btn.disabled = false;
     btn.style.opacity = '1';
-    initMap(ORIGIN_GPS);
-    clearMarkers(); addMarker(ORIGIN_GPS, 'Origen');
   }, (err) => {
     btn.disabled = false;
     btn.style.opacity = '1';
@@ -179,6 +128,7 @@ $("#btnGps").addEventListener("click", () => {
 
 // ========= calcular nearest =========
 $("#run").addEventListener("click", async () => {
+  const igIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E1306C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>';
   // New wizard flow: validate step inputs and run search when on step 3
   const mode = $("#mode").value;
   const useTraffic = $("#traffic").checked;
@@ -201,8 +151,6 @@ $("#run").addEventListener("click", async () => {
       const geo = await geocodeAddress(originManual);
       ORIGIN_GPS = { lat: geo.geometry.location.lat(), lng: geo.geometry.location.lng() };
       ORIGIN_LABEL = geo.formatted_address || originManual;
-      initMap(ORIGIN_GPS);
-      clearMarkers(); addMarker(ORIGIN_GPS, 'Origen');
     } catch(e){ /* keep textual origin if geocode fails */ }
   }
 
@@ -244,7 +192,7 @@ $("#run").addEventListener("click", async () => {
 
     // Render nearest
     if (nearest){
-      const linkAlias = nearest.url ? `<a href="${nearest.url}" target="_blank" rel="noopener">${nearest.alias}</a>` : nearest.alias;
+      const linkAlias = nearest.url ? `<a href="${nearest.url}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center;">${nearest.alias} ${igIcon}</a>` : nearest.alias;
       const gmUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(nearest.entrada)}&travelmode=${mode.toLowerCase()}`;
       const categoryIcon = nearest.category === 'JAC' ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
 
@@ -276,16 +224,6 @@ $("#run").addEventListener("click", async () => {
 
       animateElement($('#nearest'));
 
-      // Try to geocode the destination to show marker
-      try {
-        const destGeo = await geocodeAddress(nearest.entrada);
-        const pos = { lat: destGeo.geometry.location.lat(), lng: destGeo.geometry.location.lng() };
-        clearMarkers();
-        if (ORIGIN_GPS) addMarker(ORIGIN_GPS, 'Origen', null);
-        addMarker(pos, nearest.alias, null);
-        fitMapToMarkers();
-      } catch(e){ /* ignore geocode failure */ }
-
     } else {
       $('#nearest').innerHTML = `<div style="text-align:center; padding:20px;"><span class="err" style="font-size:1.1rem;">❌ No hay rutas disponibles para los destinos seleccionados.</span></div>`;
       animateElement($('#nearest'));
@@ -293,7 +231,7 @@ $("#run").addEventListener("click", async () => {
 
     // Ranking
     const rowsHtml = rows.map((r, idx) => {
-      const linkAlias = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.alias}</a>` : r.alias;
+      const linkAlias = r.url ? `<a href="${r.url}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center;">${r.alias} ${igIcon}</a>` : r.alias;
       let medal = '';
       if (r.status === 'OK') { if (idx===0) medal='🥇'; else if (idx===1) medal='🥈'; else if (idx===2) medal='🥉'; }
       if (r.status === 'OK'){
@@ -327,3 +265,6 @@ $("#run").addEventListener("click", async () => {
     showMessage('✅ Búsqueda completada con éxito', 'success');
   });
 });
+
+// Inicializar autocompletado
+setupAutocomplete();
