@@ -1,18 +1,21 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8" />
   <title>Encuentra tu Célula más Cercana - JAC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="style.css" rel="stylesheet" />
 </head>
+
 <body>
   <div class="container">
     <!-- Header con versículo bíblico -->
     <header class="header">
       <h1 class="header-title">Encuentra tu Célula más Cercana</h1>
       <p class="header-subtitle">Conecta con tu comunidad de fe</p>
-      <p class="header-verse">"Porque donde están dos o tres reunidos en mi nombre, allí estoy yo en medio de ellos" - Mateo 18:20</p>
+      <p class="header-verse">"Porque donde están dos o tres reunidos en mi nombre, allí estoy yo en medio de ellos" -
+        Mateo 18:20</p>
     </header>
 
     <!-- Card principal -->
@@ -27,10 +30,14 @@
               <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
                 <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"></circle>
-                <line x1="12" y1="1" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-                <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-                <line x1="1" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-                <line x1="19" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+                <line x1="12" y1="1" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                </line>
+                <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                </line>
+                <line x1="1" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                </line>
+                <line x1="19" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                </line>
               </svg>
             </button>
           </div>
@@ -53,12 +60,24 @@
           <label>Tipo de célula</label>
           <div class="chips">
             <label>
-              <input type="checkbox" class="cat" value="JAC" checked>
+              <input type="checkbox" class="cat" value="FAMILIAR">
+              FAMILIARES
+            </label>
+            <label>
+              <input type="checkbox" class="cat" value="MJ" >
+              MJ
+            </label>
+            <label>
+              <input type="checkbox" class="cat" value="JAC" >
               JAC
             </label>
             <label>
-              <input type="checkbox" class="cat" value="JOVENES">
+              <input type="checkbox" class="cat" value="JC">
               JÓVENES
+            </label>
+            <label>
+              <input type="checkbox" class="cat" value="INFANTIL">
+              INFANTILES
             </label>
           </div>
         </div>
@@ -89,7 +108,7 @@
 
     <!-- Resultado más cercano -->
     <div id="nearest" class="card" style="display:none;"></div>
-    
+
     <!-- Ranking completo -->
     <div id="ranking" class="card" style="display:none;"></div>
 
@@ -102,7 +121,9 @@
 
   <!-- Google Maps API -->
   <!-- Google Maps API with Places library (needed for Autocomplete) -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjXdrg6sNdLjmDQ91gfC2LOCyXVgspV8E&libraries=places&language=es&region=SV"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjXdrg6sNdLjmDQ91gfC2LOCyXVgspV8E&libraries=places&language=es&region=SV"></script>
   <script src="main.js"></script>
 </body>
+
 </html>

@@ -156,38 +156,55 @@ $("#run").addEventListener("click", async () => {
 
   // Categories
   const cats = [...document.querySelectorAll('.cat:checked')].map(c => c.value.toUpperCase());
+  console.log('Categorías seleccionadas:', cats);
   const selected = PLACES.filter(p => cats.includes(p.category));
   if (!selected.length) { showMessage('⚠️ Selecciona al menos una categoría.', 'error'); return; }
-  if (selected.length > 25) { showMessage('⚠️ Máximo 25 destinos por llamada.', 'error'); return; }
 
   showMessage('🔍 Consultando rutas y calculando distancias...');
   $('#nearest').style.display = 'none'; $('#ranking').style.display = 'none';
 
   const service = new google.maps.DistanceMatrixService();
-  const req = {
-    origins,
-    destinations: selected.map(p => p.entrada),
-    travelMode: google.maps.TravelMode[mode],
-    unitSystem: google.maps.UnitSystem.METRIC,
-    language: 'es', region: 'SV'
-  };
-  if (mode === 'DRIVING' && useTraffic) req.drivingOptions = { departureTime: new Date(), trafficModel };
+  
+  // Dividir en lotes de 25 para respetar el límite de la API
+  const chunk = (arr, size) => Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
+  const batches = chunk(selected, 25);
+  let rows = [];
 
-  service.getDistanceMatrix(req, async (res, status) => {
-    if (status !== 'OK') { showMessage(`❌ Error al consultar rutas: ${status}`, 'error'); return; }
+  try {
+    const promises = batches.map(batch => new Promise(resolve => {
+      const req = {
+        origins,
+        destinations: batch.map(p => p.entrada),
+        travelMode: google.maps.TravelMode[mode],
+        unitSystem: google.maps.UnitSystem.METRIC,
+        language: 'es', region: 'SV'
+      };
+      if (mode === 'DRIVING' && useTraffic) req.drivingOptions = { departureTime: new Date(), trafficModel };
 
-    const elements = res.rows?.[0]?.elements || [];
-    const resolved = res.destinationAddresses || [];
-    const rows = elements.map((el,i)=>{
-      const item = selected[i];
-      const display = (resolved[i] && resolved[i].trim()) || item.entrada;
-      if (el.status !== 'OK') return { ...item, display, status: el.status, distanceMeters: Infinity, durationSec: Infinity };
-      const dist = el.distance?.value ?? Infinity;
-      const dur = (el.duration_in_traffic?.value ?? el.duration?.value ?? Infinity);
-      return { ...item, display, status: 'OK', distanceMeters: dist, durationSec: dur };
-    });
+      service.getDistanceMatrix(req, (res, status) => {
+        if (status !== 'OK') {
+          // Si falla un lote, retornamos los items con error pero no rompemos todo el proceso
+          resolve(batch.map(item => ({ ...item, display: item.entrada, status: status, distanceMeters: Infinity, durationSec: Infinity })));
+        } else {
+          const elements = res.rows?.[0]?.elements || [];
+          const resolved = res.destinationAddresses || [];
+          const batchRows = elements.map((el, i) => {
+            const item = batch[i];
+            const display = (resolved[i] && resolved[i].trim()) || item.entrada;
+            if (el.status !== 'OK') return { ...item, display, status: el.status, distanceMeters: Infinity, durationSec: Infinity };
+            const dist = el.distance?.value ?? Infinity;
+            const dur = (el.duration_in_traffic?.value ?? el.duration?.value ?? Infinity);
+            return { ...item, display, status: 'OK', distanceMeters: dist, durationSec: dur };
+          });
+          resolve(batchRows);
+        }
+      });
+    }));
 
+    const results = await Promise.all(promises);
+    rows = results.flat();
     rows.sort((a,b)=> a.distanceMeters - b.distanceMeters);
+
     const nearest = rows.find(r => r.status === 'OK');
 
     // Render nearest
@@ -263,7 +280,9 @@ $("#run").addEventListener("click", async () => {
 
     setTimeout(()=> animateElement($('#ranking')), 100);
     showMessage('✅ Búsqueda completada con éxito', 'success');
-  });
+  } catch (err) {
+    showMessage(`❌ Error procesando solicitudes: ${err.message}`, 'error');
+  }
 });
 
 // Inicializar autocompletado
