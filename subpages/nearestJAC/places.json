@@ -510,8 +510,8 @@
     "url": ""
   },
   {
-    "alias": "Soyapango",
-    "entrada": "13.73564 -89.1933816",
+    "alias": "Monserrat",
+    "entrada": "13.684494 -89.212181",
     "category": "FAMILIAR",
     "url": ""
   },
@@ -562,15 +562,15 @@
     "entrada": "13.735227 -89.207688",
     "category": "JAC",
     "url": ""
-  },
+    },
+    {
+      "alias": "Los Angeles",
+      "entrada": "13.735640 -89.193382",
+      "category": "JAC",
+      "url": ""
+    },
   {
-    "alias": "Montserrat",
-    "entrada": "13.727255 -89.198258",
-    "category": "JAC",
-    "url": ""
-  },
-  {
-    "alias": "Los Angeles",
+    "alias": "Soyapango",
     "entrada": "13.726760 -89.124939",
     "category": "JAC",
     "url": ""

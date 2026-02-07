@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Ubicaciones - JAC/JC</title>
+    <title>Mapa de Ubicaciones Actualizado</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
@@ -11,55 +11,64 @@
         #map {
             height: 600px;
             width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
-            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 25px;
+            background-color: #f8f9fa;
         }
-        h2 { color: #333; }
+        h2 { color: #2c3e50; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <h2>Mapa de Registros</h2>
+    <h2>Mapa de Sitios - Listado Actualizado</h2>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // Datos proporcionados
+        // Nueva lista de sitios proporcionada
         const ubicaciones = [
+            { "alias": "Escorial", "entrada": "13.725906 -89.218338", "category": "JAC" },
             { "alias": "Montebello", "entrada": "13.727354 -89.218416", "category": "JAC" },
             { "alias": "Ayutuxtepeque", "entrada": "13.735227 -89.207688", "category": "JAC" },
-            { "alias": "Montserrat", "entrada": "13.727255 -89.198258", "category": "JAC" },
-            { "alias": "Los Angeles", "entrada": "13.726760 -89.124939", "category": "JAC" },
+            { "alias": "Los Angeles", "entrada": "13.735640 -89.193382", "category": "JAC" },
+            { "alias": "Soyapango", "entrada": "13.726760 -89.124939", "category": "JAC" },
             { "alias": "Altos de Montebello 1", "entrada": "13.7278 -89.222145", "category": "JAC" },
             { "alias": "Cuscatlán", "entrada": "13.6964066867518 -89.2070202577305", "category": "JAC" },
             { "alias": "Altos de Montebello 2", "entrada": "13.718208 -89.219714", "category": "JAC" },
-            { "alias": "Montebello (JC)", "entrada": "13.72915 -89.221714", "category": "JC" }
+            { "alias": "Montebello", "entrada": "13.72915 -89.221714", "category": "JC" }
         ];
 
-        // Inicializar el mapa centrado en la primera coordenada
-        const map = L.map('map').setView([13.727354, -89.218416], 13);
+        // Inicializar mapa (centrado en un punto medio aproximado)
+        const map = L.map('map').setView([13.725, -89.18], 13);
 
-        // Añadir capa de OpenStreetMap (estilo Google Maps)
+        // Capa base de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Iterar sobre los datos para poner los marcadores
+        // Colocar marcadores
         ubicaciones.forEach(loc => {
-            const coords = loc.entrada.split(" ");
+            const coords = loc.entrada.trim().split(/\s+/);
             const lat = parseFloat(coords[0]);
             const lng = parseFloat(coords[1]);
 
-            // Crear marcador y popup
-            L.marker([lat, lng])
-                .addTo(map)
-                .bindPopup(`<b>${loc.alias}</b><br>Categoría: ${loc.category}<br><a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank">Ver en Google Maps</a>`);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                L.marker([lat, lng])
+                    .addTo(map)
+                    .bindPopup(`
+                        <strong>${loc.alias}</strong><br>
+                        Categoría: ${loc.category}<br>
+                        <hr>
+                        <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color: blue; text-decoration: underline;">
+                            Abrir en Google Maps
+                        </a>
+                    `);
+            }
         });
     </script>
 </body>
