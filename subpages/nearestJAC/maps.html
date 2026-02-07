@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Ubicaciones - JAC/JC</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h2 { color: #333; }
+    </style>
+</head>
+<body>
+
+    <h2>Mapa de Registros</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Datos proporcionados
+        const ubicaciones = [
+            { "alias": "Montebello", "entrada": "13.727354 -89.218416", "category": "JAC" },
+            { "alias": "Ayutuxtepeque", "entrada": "13.735227 -89.207688", "category": "JAC" },
+            { "alias": "Montserrat", "entrada": "13.727255 -89.198258", "category": "JAC" },
+            { "alias": "Los Angeles", "entrada": "13.726760 -89.124939", "category": "JAC" },
+            { "alias": "Altos de Montebello 1", "entrada": "13.7278 -89.222145", "category": "JAC" },
+            { "alias": "Cuscatlán", "entrada": "13.6964066867518 -89.2070202577305", "category": "JAC" },
+            { "alias": "Altos de Montebello 2", "entrada": "13.718208 -89.219714", "category": "JAC" },
+            { "alias": "Montebello (JC)", "entrada": "13.72915 -89.221714", "category": "JC" }
+        ];
+
+        // Inicializar el mapa centrado en la primera coordenada
+        const map = L.map('map').setView([13.727354, -89.218416], 13);
+
+        // Añadir capa de OpenStreetMap (estilo Google Maps)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Iterar sobre los datos para poner los marcadores
+        ubicaciones.forEach(loc => {
+            const coords = loc.entrada.split(" ");
+            const lat = parseFloat(coords[0]);
+            const lng = parseFloat(coords[1]);
+
+            // Crear marcador y popup
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup(`<b>${loc.alias}</b><br>Categoría: ${loc.category}<br><a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank">Ver en Google Maps</a>`);
+        });
+    </script>
+</body>
+</html>
