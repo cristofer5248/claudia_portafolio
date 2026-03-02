@@ -5,150 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presentación Interactiva | Alexis</title>
     <style>
+        /* 1. BASE NEGRA */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
+            width: 100%;
             overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #000;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #000; /* Fondo negro total */
         }
 
-/* 2. EL FONDO (Aquí estaba el detalle) */
-        #bg-image {
+        /* 2. CONTENEDOR CON MARGEN DEL 15% */
+        #main-container {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 2%;
+            left: 2%;
+            right: 2%;
+            bottom: 2%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #bg-image {
             width: 100%;
             height: 100%;
-            background-size: cover;
+            background-size: contain; /* Para que la imagen no se corte */
             background-position: center;
             background-repeat: no-repeat;
             transition: background-image 0.5s ease-in-out;
-            z-index: 1; /* Debe ser mayor que el fondo del body */
         }
 
-        .overlay {
+        /* 3. REPRODUCTOR AUTOCULTable */
+        .audio-container {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.3);
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 100;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 1;
         }
 
-        /* Botones laterales */
+        /* Clase para esconder el audio */
+        .audio-hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+            pointer-events: none;
+        }
+
+        /* 4. CONTROLES EXTERNOS (Fuera del margen para que no estorben) */
         .nav-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
             color: white;
             border: none;
-            padding: 25px 15px;
+            padding: 20px 10px;
             cursor: pointer;
             font-size: 30px;
-            border-radius: 10px;
+            z-index: 110;
             transition: 0.3s;
-            z-index: 10;
         }
-        .nav-btn:hover { background: rgba(255,255,255,0.5); }
-        #prev { left: 10px; }
-        #next { right: 10px; }
+        .nav-btn:hover { background: rgba(255,255,255,0.3); }
+        #prev { left: 5%; }
+        #next { right: 5%; }
 
-        /* Contenedor del audio de Google Drive */
-        .audio-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 600px;
-            background: rgba(255,255,255,0.95);
-            padding: 5px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 10;
-        }
-
-        iframe {
-            border: none;
-            width: 100%;
-            height: 60px;
-            border-radius: 10px;
-        }
-
-        /* Contador de Slides */
         .counter {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            color: white;
-            background: rgba(0,0,0,0.6);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            letter-spacing: 1px;
+            top: 5%;
+            left: 5%;
+            color: #777;
+            font-size: 0.9rem;
         }
 
-        /* LA CEREZA DEL PASTEL - Botón */
         .cherry-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 5%;
+            right: 5%;
             background: #ff4d4d;
             color: white;
-            padding: 12px 20px;
+            padding: 10px 20px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 20;
-            border: 2px solid white;
+            z-index: 110;
+            border: 1px solid white;
+            transition: 0.3s;
         }
+        .cherry-btn:hover { transform: scale(1.1); }
 
-        .cherry-btn:hover {
-            transform: scale(1.1) rotate(-2deg);
-            background: #e60000;
-            box-shadow: 0 6px 20px rgba(255, 77, 77, 0.6);
-        }
-
-        .cherry-emoji {
-            font-size: 1.5em;
-        }
     </style>
 </head>
-<body>
+<body onclick="showControls()" onmousemove="showControls()">
 
-    <div id="bg-image"></div>
-    <div class="overlay"></div>
-    
     <div class="counter" id="counter">SLIDE 1 / 15</div>
 
-    <a href="cereza.html" class="cherry-btn">
-        <span class="cherry-emoji">🍒</span>
-        LA CEREZA DEL PASTEL
-    </a>
+    <a href="cereza.html" class="cherry-btn">🍒 LA CEREZA DEL PASTEL</a>
+
+    <div id="main-container">
+        <div id="bg-image"></div>
+    </div>
 
     <button class="nav-btn" id="prev" onclick="changeSlide(-1)">&#10094;</button>
     <button class="nav-btn" id="next" onclick="changeSlide(1)">&#10095;</button>
 
-    <div class="audio-container">
-        <iframe src="https://docs.google.com/file/d/1qG_Le_r5yAmUk3PB_RyNOeLWqFDmmIcE/preview"></iframe>
+    <div class="audio-container" id="audiobox">
+        <iframe src="https://docs.google.com/file/d/1AA0yAxw4FlLc0L61CaljUq-VE84rG0Yy/preview"></iframe>
     </div>
 
     <script>
         let currentSlide = 1;
-        const totalSlides = 21;
+        const totalSlides = 15;
         const bgElement = document.getElementById('bg-image');
         const counterElement = document.getElementById('counter');
+        const audioBox = document.getElementById('audiobox');
+        let hideTimeout;
 
         function updateSlide() {
-            // Cambia el fondo a images/1.jpg, images/2.jpg, etc.
             bgElement.style.backgroundImage = `url('images/${currentSlide}.jpg')`;
             counterElement.innerText = `SLIDE ${currentSlide} / ${totalSlides}`;
         }
@@ -160,14 +143,29 @@
             updateSlide();
         }
 
-        // Detectar flechas del teclado para cambiar diapositivas
+        // Lógica para esconder el audio
+        function showControls() {
+            audioBox.classList.remove('audio-hidden');
+            
+            // Limpiar el contador previo
+            clearTimeout(hideTimeout);
+            
+            // Esconder después de 3 segundos de inactividad
+            hideTimeout = setTimeout(() => {
+                audioBox.classList.add('audio-hidden');
+            }, 3000);
+        }
+
         document.addEventListener('keydown', (e) => {
+            showControls();
             if (e.key === "ArrowRight") changeSlide(1);
             if (e.key === "ArrowLeft") changeSlide(-1);
         });
 
-        // Carga inicial
-        updateSlide();
+        window.onload = () => {
+            updateSlide();
+            showControls(); // Aparece al cargar
+        };
     </script>
 </body>
 </html>
