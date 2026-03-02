@@ -129,27 +129,27 @@
     
     <div class="counter" id="counter">SLIDE 1 / 15</div>
 
-    <a href="cereza.html" class="cherry-btn">
-        <span class="cherry-emoji">🍒</span>
-        LA CEREZA DEL PASTEL
+    <a href="main.html" class="cherry-btn">
+        <span class="cherry-emoji">🙏</span>
+        Regresar
     </a>
 
     <button class="nav-btn" id="prev" onclick="changeSlide(-1)">&#10094;</button>
     <button class="nav-btn" id="next" onclick="changeSlide(1)">&#10095;</button>
 
     <div class="audio-container">
-        <iframe src="https://docs.google.com/file/d/1qG_Le_r5yAmUk3PB_RyNOeLWqFDmmIcE/preview"></iframe>
+        <iframe src="https://docs.google.com/file/d/1AA0yAxw4FlLc0L61CaljUq-VE84rG0Yy/preview"></iframe>
     </div>
 
     <script>
         let currentSlide = 1;
-        const totalSlides = 21;
+        const totalSlides = 2;
         const bgElement = document.getElementById('bg-image');
         const counterElement = document.getElementById('counter');
 
         function updateSlide() {
             // Cambia el fondo a images/1.jpg, images/2.jpg, etc.
-            bgElement.style.backgroundImage = `url('images/${currentSlide}.jpg')`;
+            bgElement.style.backgroundImage = `url('images2/${currentSlide}.jpg')`;
             counterElement.innerText = `SLIDE ${currentSlide} / ${totalSlides}`;
         }
 
