@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>POS Pro Mobile - ChrisGeek</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        :root { --primary: #1e272e; --success: #05c46b; --accent: #0fbcf9; --danger: #ff3f34; --dark: #121212; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--dark); color: #fff; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation;
+        }
+
+        /* Pantalla de Inicio */
+        #setup-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); z-index: 300; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 20px; text-align: center;
+        }
+        
+        input, select, .btn-main { 
+            padding: 18px; border-radius: 12px; border: none; font-size: 1.1rem; 
+            margin: 10px; width: 100%; max-width: 350px; outline: none; box-sizing: border-box;
+        }
+
+        .btn-main { background: var(--success); color: white; cursor: pointer; font-weight: bold; text-transform: uppercase; border-bottom: 4px solid #049e56; }
+        .btn-main:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+        /* Terminal Principal */
+        .container { text-align: center; width: 95%; max-width: 650px; }
+        .display-pannel { 
+            background: #000; border: 2px solid #333; padding: 40px 15px; 
+            border-radius: 25px; box-shadow: 0 10px 50px rgba(0,0,0,0.5); 
+        }
+        .cajero-info { color: var(--accent); font-size: 1.1rem; margin-bottom: 20px; font-family: monospace; }
+        .total-amount { font-size: 5.5rem; font-weight: 800; color: var(--success); margin: 10px 0; font-family: 'Courier New', monospace; }
+        
+        /* Botonera Táctil */
+        .touch-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .btn-touch { 
+            padding: 20px; border-radius: 15px; border: none; font-weight: bold; 
+            color: white; font-size: 1rem; cursor: pointer; display: flex; flex-direction: column; align-items: center;
+        }
+        .btn-scan { background: var(--accent); border-bottom: 4px solid #0a94c2; }
+        .btn-finish { background: var(--danger); border-bottom: 4px solid #c0392b; }
+
+        /* Modal Cámara */
+        #camera-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 400; flex-direction: column; justify-content: center; align-items: center;
+        }
+        #reader { width: 90%; max-width: 400px; border-radius: 20px; overflow: hidden; border: 2px solid #fff; }
+        .btn-cancel { background: #333; color: #fff; padding: 15px 40px; border-radius: 50px; margin-top: 30px; border: none; }
+
+        /* Ticket */
+        #receipt-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; color: #000; z-index: 500; flex-direction: column; padding: 20px; align-items: center; justify-content: center;
+        }
+        .ticket { background: #f9f9f9; padding: 20px; width: 100%; max-width: 320px; border: 1px dashed #000; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <div id="setup-screen">
+        <h1 style="color:var(--accent)">SISTEMA POS</h1>
+        <input type="text" id="input-name" placeholder="Nombre" value="Nicole & Samantha">
+        <select id="camera-select"><option value="">Cargando cámaras...</option></select>
+        <button class="btn-main" onclick="iniciarSistema()">Abrir Punto de Venta</button>
+    </div>
+
+    <div class="container">
+        <div class="display-pannel">
+            <div class="cajero-info" id="display-name">CAJERO: Nicole & Samantha</div>
+            <div style="color: #444; font-size: 0.8rem; letter-spacing: 2px;">SUBTOTAL</div>
+            <div class="total-amount" id="total-display">$0.00</div>
+            
+            <div class="touch-controls">
+                <button class="btn-touch btn-scan" onclick="abrirCamara()">
+                    <span style="font-size: 1.5rem;">📷</span>
+                    ESCANEAR (M)
+                </button>
+                <button class="btn-touch btn-finish" onclick="cerrarCaja()">
+                    <span style="font-size: 1.5rem;">💰</span>
+                    COBRAR (F)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="camera-modal">
+        <div id="reader"></div>
+        <button class="btn-cancel" onclick="cerrarCamara()">CANCELAR</button>
+    </div>
+
+    <div id="receipt-modal">
+        <div class="ticket">
+            <h3 style="text-align:center">COMPROBANTE</h3>
+            <p id="r-cajero"></p>
+            <p id="r-fecha"></p>
+            <hr>
+            <p id="r-subtotal"></p>
+            <p id="r-iva"></p>
+            <h2 id="r-total" style="text-align:right"></h2>
+            <hr>
+            <p style="text-align:center; font-size: 0.7rem;">CHRISGEEK STORE</p>
+        </div>
+        <button class="btn-main" style="margin-top:20px" onclick="location.reload()">NUEVA VENTA</button>
+    </div>
+
+    <script>
+        let total = 0.0;
+        let nombreCajero = "";
+        let cameraId = "";
+        let html5QrCode;
+        const IVA = 0.13;
+
+        // Detectar cámaras al inicio
+        Html5Qrcode.getCameras().then(devices => {
+            const select = document.getElementById('camera-select');
+            if (devices.length) {
+                select.innerHTML = "";
+                devices.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.text = d.label || `Cámara ${select.length + 1}`;
+                    select.appendChild(opt);
+                });
+            }
+        });
+
+        function iniciarSistema() {
+            nombreCajero = document.getElementById('input-name').value || "Nicole & Samantha";
+            cameraId = document.getElementById('camera-select').value;
+            if(!cameraId) return alert("Selecciona una cámara");
+            
+            document.getElementById('display-name').innerText = `CAJERO: ${nombreCajero}`;
+            document.getElementById('setup-screen').style.display = 'none';
+            html5QrCode = new Html5Qrcode("reader");
+        }
+
+        // Atajos de teclado
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('setup-screen').style.display === 'none') {
+                const k = e.key.toUpperCase();
+                if (k === 'M') abrirCamara();
+                if (k === 'F') cerrarCaja();
+                if (e.key === 'Escape') cerrarCamara();
+            }
+        });
+
+        function abrirCamara() {
+            document.getElementById('camera-modal').style.display = 'flex';
+            html5QrCode.start(cameraId, { fps: 20, qrbox: 250 }, onScanSuccess);
+        }
+
+        function cerrarCamara() {
+            if(html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('camera-modal').style.display = 'none';
+                });
+            } else {
+                document.getElementById('camera-modal').style.display = 'none';
+            }
+        }
+
+        function onScanSuccess(text) {
+            let val = parseFloat(text.replace(/[^\d.-]/g, ''));
+            if (!isNaN(val)) {
+                playBeep(800, 0.1);
+                total += val;
+                document.getElementById('total-display').innerText = `$${total.toFixed(2)}`;
+                cerrarCamara();
+            } else {
+                playBeep(200, 0.3);
+            }
+        }
+
+        function cerrarCaja() {
+            if (total <= 0) return;
+            document.getElementById('r-cajero').innerText = `CAJERO: ${nombreCajero}`;
+            document.getElementById('r-fecha').innerText = `FECHA: ${new Date().toLocaleDateString()}`;
+            document.getElementById('r-subtotal').innerText = `SUBTOTAL: $${total.toFixed(2)}`;
+            document.getElementById('r-iva').innerText = `IVA (13%): $${(total * IVA).toFixed(2)}`;
+            document.getElementById('r-total').innerText = `TOTAL: $${(total * (1 + IVA)).toFixed(2)}`;
+            document.getElementById('receipt-modal').style.display = 'flex';
+        }
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(f, d) {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.frequency.value = f;
+            g.gain.value = 0.1;
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.start();
+            o.stop(audioCtx.currentTime + d);
+        }
+    </script>
+</body>
+</html>
