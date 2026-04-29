@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminador de Fondo Verde</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #2c2c2c; color: white; }
+        canvas { border: 2px solid #555; margin-top: 20px; max-width: 90%; }
+        .controls { background: #444; padding: 20px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <h2>Chroma Key en el Navegador</h2>
+    
+    <div class="controls">
+        <label>1. Foto Fondo Verde: </label>
+        <input type="file" id="foregroundFile" accept="image/*"><br><br>
+        <label>2. Nuevo Fondo: </label>
+        <input type="file" id="backgroundFile" accept="image/*">
+    </div>
+
+    <canvas id="outputCanvas"></canvas>
+
+    <script>
+        const fgInput = document.getElementById('foregroundFile');
+        const bgInput = document.getElementById('backgroundFile');
+        const canvas = document.getElementById('outputCanvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+        let imgFG = new Image();
+        let imgBG = new Image();
+
+        // Al cargar archivos, procesamos
+        [fgInput, bgInput].forEach(input => {
+            input.onchange = (e) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    if (input === fgInput) imgFG.src = event.target.result;
+                    else imgBG.src = event.target.result;
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            };
+        });
+
+        imgFG.onload = imgBG.onload = processChroma;
+
+        function processChroma() {
+            if (!imgFG.src || !imgBG.src) return;
+
+            // Ajustamos el canvas al tamaño de la imagen principal
+            canvas.width = imgFG.width;
+            canvas.height = imgFG.height;
+
+            // 1. Dibujamos el fondo nuevo escalado
+            ctx.drawImage(imgBG, 0, 0, canvas.width, canvas.height);
+            
+            // 2. Dibujamos la imagen verde temporalmente para extraer pixeles
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(imgFG, 0, 0);
+
+            const frame = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+            const l = frame.data.length / 4;
+
+            for (let i = 0; i < l; i++) {
+                let r = frame.data[i * 4 + 0];
+                let g = frame.data[i * 4 + 1];
+                let b = frame.data[i * 4 + 2];
+
+                // Lógica de detección de verde (ajustable)
+                // Si el verde es predominante, hacemos el pixel transparente
+                if (g > 100 && g > r * 1.2 && g > b * 1.2) {
+                    frame.data[i * 4 + 3] = 0;
+                }
+            }
+
+            // 3. Superponemos la imagen procesada sobre el fondo
+            // Creamos un bitmap de la data modificada y la pintamos
+            createImageBitmap(frame).then(renderer => {
+                ctx.drawImage(renderer, 0, 0);
+            });
+        }
+    </script>
+</body>
+</html>

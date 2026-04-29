@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CELESTIAL EVENT | Interstellar Expeditions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-primary-fixed-variant": "#004f54",
+                "surface-dim": "#10131b",
+                "primary-fixed": "#7df4ff",
+                "tertiary-fixed-dim": "#d3bcf6",
+                "surface-container-highest": "#31353e",
+                "on-surface-variant": "#b9cacb",
+                "on-surface": "#e0e2ee",
+                "on-primary-container": "#006970",
+                "on-primary-fixed": "#002022",
+                "on-secondary": "#520072",
+                "surface-bright": "#353942",
+                "tertiary": "#fbf3ff",
+                "inverse-on-surface": "#2d3039",
+                "secondary-fixed": "#f8d8ff",
+                "outline": "#849495",
+                "error": "#ffb4ab",
+                "secondary-container": "#b600f8",
+                "primary": "#dbfcff",
+                "on-tertiary-fixed-variant": "#503e6e",
+                "tertiary-container": "#e4d1ff",
+                "surface-container-high": "#262a33",
+                "surface-variant": "#31353e",
+                "on-secondary-container": "#fff6fc",
+                "surface": "#10131b",
+                "surface-container-low": "#181c24",
+                "surface-tint": "#00dbe9",
+                "on-primary": "#00363a",
+                "surface-container-lowest": "#0a0e16",
+                "on-tertiary": "#392756",
+                "tertiary-fixed": "#ecdcff",
+                "primary-container": "#00f0ff",
+                "secondary-fixed-dim": "#ebb2ff",
+                "background": "#10131b",
+                "on-tertiary-container": "#685587",
+                "on-error": "#690005",
+                "inverse-surface": "#e0e2ee",
+                "on-background": "#e0e2ee",
+                "outline-variant": "#3b494b",
+                "on-secondary-fixed-variant": "#74009f",
+                "error-container": "#93000a",
+                "secondary": "#ebb2ff",
+                "on-secondary-fixed": "#320047",
+                "on-error-container": "#ffdad6",
+                "inverse-primary": "#006970",
+                "primary-fixed-dim": "#00dbe9",
+                "surface-container": "#1c2028",
+                "on-tertiary-fixed": "#231140"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "stack-md": "32px",
+                "unit": "8px",
+                "stack-sm": "16px",
+                "gutter": "24px",
+                "margin-page": "40px",
+                "container-max": "1200px",
+                "stack-lg": "64px"
+            },
+            "fontFamily": {
+                "headline-md": ["Space Grotesk"],
+                "body-md": ["Manrope"],
+                "headline-lg": ["Space Grotesk"],
+                "headline-xl": ["Space Grotesk"],
+                "body-lg": ["Manrope"],
+                "label-caps": ["Space Grotesk"]
+            },
+            "fontSize": {
+                "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.2em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0a0e16;
+            color: #e0e2ee;
+            overflow-x: hidden;
+        }
+        .star-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a2332 0%, #0a0e16 100%);
+        }
+        .stars-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 100px 150px, #00f0ff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 200px 250px, #fff, rgba(0,0,0,0));
+            background-size: 300px 300px;
+            opacity: 0.4;
+        }
+        .glass-panel {
+            background: rgba(16, 19, 27, 0.6);
+            /* backdrop-filter: blur(20px); */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+        .parallax-container {
+            perspective: 1000px;
+        }
+        @keyframes warpIn {
+            0% { transform: scale(0.5) translateZ(-500px); opacity: 0; }
+            100% { transform: scale(1) translateZ(0); opacity: 1; }
+        }
+        .warp-effect {
+            animation: warpIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        .cycle-image {
+            animation: imageFade 3s infinite;
+        }
+        @keyframes imageFade {
+            0%, 30% { opacity: 0; transform: scale(0.95); }
+            33%, 63% { opacity: 1; transform: scale(1); }
+            66%, 96% { opacity: 0; transform: scale(1.05); }
+            100% { opacity: 0; }
+        }
+        .image-layer-1 { animation-delay: 0s; }
+        .image-layer-2 { animation-delay: 1s; }
+        .image-layer-3 { animation-delay: 2s; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md">
+<!-- Fixed Background -->
+<div class="star-background">
+<div class="stars-overlay"></div>
+<div class="absolute inset-0 bg-[url('img/background.png')] bg-cover bg-no-repeat"></div>
+</div>
+<!-- Top Navigation (Shared Component) -->
+<header class="fixed top-0 w-full z-50 bg-transparent backdrop-blur-md border-b border-white/10 flex justify-between items-center px-8 py-4 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-cyan-400" data-icon="rocket_launch">rocket_launch</span>
+<h1 class="text-cyan-400 font-headline-md font-bold tracking-widest uppercase">CELESTIAL EVENT</h1>
+</div>
+<span class="material-symbols-outlined text-white/60 hover:text-cyan-300 transition-all duration-300" data-icon="menu">menu</span>
+</header>
+<main class="relative pt-24 pb-32">
+<!-- Hero Section -->
+<section class="min-h-[795px] flex flex-col items-center justify-center px-gutter text-center warp-effect">
+<div class="relative w-full max-w-[320px] mb-stack-md mx-auto">
+  <div class="absolute inset-0 bg-primary-container/10 blur-[60px] rounded-full"></div>
+  
+  <img alt="The Super Emilio Birthday" 
+       class="relative w-full h-auto z-10 drop-shadow-[0_0_15px_rgba(0,240,255,0.3)]" 
+       src="img/logo.png"/>
+</div>
+<!-- <h2 class="font-headline-xl text-headline-xl text-primary mb-unit leading-tight tracking-tighter">
+                BEYOND THE <br/> HORIZON
+            </h2> -->
+<!-- <p class="font-label-caps  text-label-caps text-secondary tracking-[0.3em] mb-stack-sm">DECEMBER 21 | SECTOR 7G</p> -->
+<div class="h-1 w-24 bg-primary-container mx-auto rounded-full"></div>
+</section>
+<!-- Parallax/Scrolling Content -->
+<section class="px-gutter space-y-stack-lg py-stack-lg overflow-hidden">
+<div class="glass-panel p-stack-sm rounded-xl">
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed italic text-center">
+                    "The stars are not the limit, they are just the beginning of our journey into the infinite."
+                </p>
+</div>
+<!-- Parallax Cycling Image Section -->
+<div class="relative h-[400px] w-full flex items-center justify-center">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-gradient-to-b from-transparent via-primary-container/5 to-transparent"></div>
+</div>
+<!-- Infinite Image Cycle Container -->
+<div class="relative w-full aspect-[4/5] max-w-[300px] rounded-xl overflow-hidden glass-panel">
+<img alt="Nebula" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-1" data-alt="vibrant purple and orange nebula cloud with sparkling distant stars high resolution astrophotography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUoNOCSxeHfWzTCa7hVORYGXfFBWvGFp4ujFl0O_UpIaXQSYcIf2hzRCs3wbMgUOBCJrHUSPbEd2zBsapmzbwzM88bAjHs2MYWiyIQP1GqnoTq63RpdcSq1Ej7O2Y9Q1RhB_JM1bX30jeq3050Z1gn4fDb930sX0pI4p9XLiF8Fc9IAN4952XvKGGE6aJFJvHsVW-LtknlTPm9BVLrYXuXjiYEr4tC6tRtEOVqTyyleDDK0Wcxfn7lJwjV_Yql4yTrK_V3soA0xMYN"/>
+<img alt="Galaxy" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-2" data-alt="majestic spiral galaxy with bright core and blue peripheral stars against deep black space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHoJKUaXZtzAc4bKDrj0a88-Af8YcKXforoEBtHPe7TcWWDOPi7gVT4VjTUIlGE2W1bWCeslM3ozulTCEc9_JiAv9oC9H7ZYst3fr0sjPMGEQ4q0MfTFo_Kh-8Ei5lLwB9ZSJoVC2AMZtHsTy9MKAxgO-D7JK8bB7jM_BCcjAq4jD_oCxAJP3zZ2vHwjf_Skdttso0ZbWrgWzucTqOS_2KOFi7WqMn4z0kH2yCUKtEgWVaosDDzOoMJE_GpQHIJGzd5tkHVjAng69X"/>
+<img alt="Spaceship" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-3" data-alt="sleek futuristic chrome spaceship silhouetted against a massive glowing sun in deep orbit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMKJlU6imUOUAWWepxBE0H4VCyNt2ls3zdoec8zMBngwmrkkLAgXiJ8jjLTolBrOqSPmsUotdcu2rZKpuXNs1Ey7I4dgE3_IBg8JnPQTKhVgeX4VfoAiQklUHvblqYyLCwaPF_S_ZBMN5ORzHFxh4ybttbo4Dc0PFLY-ezln5l5mwT4eBmeU8sEmLPR06wr_E14I-Tk02XReP8VvW_40zbCmPLQKBx_bAGREvsSTGlzGUouC-8gkHWiMGjwK9v-bUXohaIVKWhedpp"/>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+<span class="font-label-caps text-[10px] text-primary tracking-widest">LIVE TRANSMISSION: SECTOR 01</span>
+</div>
+</div>
+</div>
+<!-- Bento Info Grid -->
+<div class="grid grid-cols-1 gap-gutter">
+<div class="glass-panel p-gutter rounded-xl border-l-4 border-l-secondary">
+<span class="material-symbols-outlined text-secondary mb-unit" data-icon="schedule">schedule</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-unit">T-Minus Zero</h3>
+<p class="font-body-md text-on-surface-variant">Arrival begins at 22:00 Universal Time. Formal interstellar attire is required for all delegates.</p>
+</div>
+<div class="glass-panel p-gutter rounded-xl border-l-4 border-l-primary-container">
+<span class="material-symbols-outlined text-primary-container mb-unit" data-icon="location_on">location_on</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-unit">The Citadel</h3>
+<p class="font-body-md text-on-surface-variant">Located at the zenith of the Lunar Outpost. Follow the blue beam guidance system upon docking.</p>
+</div>
+</div>
+<!-- Interactive Details -->
+<div class="space-y-stack-sm">
+<div class="flex items-center gap-stack-sm group">
+<div class="w-2 h-2 rotate-45 bg-primary-container group-hover:shadow-[0_0_10px_#00f0ff] transition-all"></div>
+<span class="font-label-caps text-on-surface text-[14px]">UNLIMITED SYNTH-CHAMPAGNE</span>
+</div>
+<div class="flex items-center gap-stack-sm group">
+<div class="w-2 h-2 rotate-45 bg-primary-container group-hover:shadow-[0_0_10px_#00f0ff] transition-all"></div>
+<span class="font-label-caps text-on-surface text-[14px]">ORBITAL VIEWING DECK ACCESS</span>
+</div>
+<div class="flex items-center gap-stack-sm group">
+<div class="w-2 h-2 rotate-45 bg-primary-container group-hover:shadow-[0_0_10px_#00f0ff] transition-all"></div>
+<span class="font-label-caps text-on-surface text-[14px]">ZERO-G DANCE FLOOR</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Shared Footer -->
+<footer class="w-full py-12 bg-black/40 backdrop-blur-xl border-t border-white/5 flex flex-col items-center gap-6 max-w-7xl mx-auto">
+<!-- <p class="text-white/80 font-headline-md font-bold tracking-widest">INTERSTELLAR EXPEDITIONS</p>    -->
+<div class="flex gap-gutter">
+<a class="font-['Space_Grotesk'] text-[10px] tracking-widest text-white/40 hover:text-white transition-colors" href="#">Privacy</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-widest text-white/40 hover:text-white transition-colors" href="#">Coordinates</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-widest text-white/40 hover:text-white transition-colors" href="#">RSVP</a>
+</div>
+<p class="font-['Space_Grotesk'] text-[10px] tracking-widest text-white/40">© 2026 Chrisgeek</p>
+</footer>
+<!-- Persistent Floating CTA -->
+<div class="fixed bottom-8 left-0 right-0 px-gutter z-50 pointer-events-none">
+  <a class="pointer-events-auto flex items-center justify-center gap-unit w-full bg-secondary-container text-white py-5 px-stack-md rounded-full font-headline-md font-bold tracking-widest shadow-[0_10px_30px_rgba(182,0,248,0.4)] hover:scale-[1.02] active:scale-95 transition-all duration-300" href="https://wa.me/yournumber">
+    <span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+    Confirmar Asistencia
+  </a>
+</div>
+</body></html>

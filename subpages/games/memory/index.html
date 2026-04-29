@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de selección de dificultad -->
+        <div id="difficultyScreen" class="screen active">
+            <h1>🎮 Juego de Memoria</h1>
+            <p>Selecciona el nivel de dificultad y el tipo de cartas:</p>
+
+            <div class="mode-selection">
+                <p>¿Qué quieres usar?</p>
+                <div class="mode-buttons">
+                    <button class="btn btn-easy active" data-mode="emoji">Emojis</button>
+                    <button class="btn btn-medium" data-mode="photo">Fotos</button>
+                </div>
+            </div>
+
+            <div id="photoUploadPanel" class="upload-panel hidden">
+                <p>Sube tus fotos con fondo verde:</p>
+                <input type="file" id="cardsUpload" accept="image/*" multiple>
+                <p>Sube el fondo que quieres usar:</p>
+                <input type="file" id="backgroundUpload" accept="image/*">
+                <p class="help-text">Se eliminará el verde y se colocará el fondo elegido detrás.</p>
+                <p id="uploadedInfo">0 imágenes listas</p>
+            </div>
+
+            <p>Selecciona el tamaño del tablero:</p>
+            <div class="difficulty-buttons">
+                <button class="btn btn-easy" data-level="3">3x3 (9 cartas)</button>
+                <button class="btn btn-medium" data-level="4">4x4 (16 cartas)</button>
+                <button class="btn btn-hard" data-level="5">5x5 (25 cartas)</button>
+            </div>
+        </div>
+
+        <!-- Pantalla del juego -->
+        <div id="gameScreen" class="screen">
+            <div class="header">
+                <h1>🎮 Juego de Memoria</h1>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="label">Tiempo:</span>
+                        <span id="timer" class="value">0s</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Movimientos:</span>
+                        <span id="moves" class="value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Pares:</span>
+                        <span id="pairs" class="value">0/0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="gameBoard" class="game-board"></div>
+
+            <div class="buttons">
+                <button id="resetBtn" class="btn btn-reset">Reiniciar Juego</button>
+                <button id="menuBtn" class="btn btn-menu">Volver al Menú</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de victoria -->
+        <div id="winScreen" class="screen">
+            <h1>🎉 ¡Ganaste!</h1>
+            <div class="win-stats">
+                <p>Tiempo total: <span id="finalTime">0s</span></p>
+                <p>Movimientos totales: <span id="finalMoves">0</span></p>
+                <p>Dificultad: <span id="finalLevel">3x3</span></p>
+            </div>
+            <div class="buttons">
+                <button id="playAgainBtn" class="btn btn-primary">Jugar de Nuevo</button>
+                <button id="menuBtn2" class="btn btn-menu">Volver al Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
