@@ -139,10 +139,10 @@
             100% { transform: scale(1) translateZ(0); opacity: 1; }
         }
         .warp-effect {
-            animation: warpIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: warpIn 1.2s cubic-bezier(0.95, 0.05, 0.78, 0.2, 1) forwards;
         }
         .cycle-image {
-            animation: imageFade 3s infinite;
+            animation: imageFade 4s infinite;
         }
         @keyframes imageFade {
             0%, 30% { opacity: 0; transform: scale(0.95); }
@@ -153,6 +153,7 @@
         .image-layer-1 { animation-delay: 0s; }
         .image-layer-2 { animation-delay: 1s; }
         .image-layer-3 { animation-delay: 2s; }
+        .image-layer-4 { animation-delay: 3s; }
     </style>
 <style>
     body {
@@ -184,9 +185,9 @@
        class="relative w-full h-auto z-10 drop-shadow-[0_0_15px_rgba(0,240,255,0.3)]" 
        src="img/logo.png"/>
 </div>
-<!-- <h2 class="font-headline-xl text-headline-xl text-primary mb-unit leading-tight tracking-tighter">
-                BEYOND THE <br/> HORIZON
-            </h2> -->
+<h2 class="font-headline-xl text-headline-xl text-primary mb-unit leading-tight tracking-tighter">
+                📍
+            </h2>
 <!-- <p class="font-label-caps  text-label-caps text-secondary tracking-[0.3em] mb-stack-sm">DECEMBER 21 | SECTOR 7G</p> -->
 <div class="h-1 w-24 bg-primary-container mx-auto rounded-full"></div>
 </section>
@@ -204,9 +205,10 @@
 </div>
 <!-- Infinite Image Cycle Container -->
 <div class="relative w-full aspect-[4/5] max-w-[300px] rounded-xl overflow-hidden glass-panel">
-<img alt="Nebula" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-1" data-alt="vibrant purple and orange nebula cloud with sparkling distant stars high resolution astrophotography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUoNOCSxeHfWzTCa7hVORYGXfFBWvGFp4ujFl0O_UpIaXQSYcIf2hzRCs3wbMgUOBCJrHUSPbEd2zBsapmzbwzM88bAjHs2MYWiyIQP1GqnoTq63RpdcSq1Ej7O2Y9Q1RhB_JM1bX30jeq3050Z1gn4fDb930sX0pI4p9XLiF8Fc9IAN4952XvKGGE6aJFJvHsVW-LtknlTPm9BVLrYXuXjiYEr4tC6tRtEOVqTyyleDDK0Wcxfn7lJwjV_Yql4yTrK_V3soA0xMYN"/>
-<img alt="Galaxy" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-2" data-alt="majestic spiral galaxy with bright core and blue peripheral stars against deep black space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHoJKUaXZtzAc4bKDrj0a88-Af8YcKXforoEBtHPe7TcWWDOPi7gVT4VjTUIlGE2W1bWCeslM3ozulTCEc9_JiAv9oC9H7ZYst3fr0sjPMGEQ4q0MfTFo_Kh-8Ei5lLwB9ZSJoVC2AMZtHsTy9MKAxgO-D7JK8bB7jM_BCcjAq4jD_oCxAJP3zZ2vHwjf_Skdttso0ZbWrgWzucTqOS_2KOFi7WqMn4z0kH2yCUKtEgWVaosDDzOoMJE_GpQHIJGzd5tkHVjAng69X"/>
-<img alt="Spaceship" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-3" data-alt="sleek futuristic chrome spaceship silhouetted against a massive glowing sun in deep orbit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMKJlU6imUOUAWWepxBE0H4VCyNt2ls3zdoec8zMBngwmrkkLAgXiJ8jjLTolBrOqSPmsUotdcu2rZKpuXNs1Ey7I4dgE3_IBg8JnPQTKhVgeX4VfoAiQklUHvblqYyLCwaPF_S_ZBMN5ORzHFxh4ybttbo4Dc0PFLY-ezln5l5mwT4eBmeU8sEmLPR06wr_E14I-Tk02XReP8VvW_40zbCmPLQKBx_bAGREvsSTGlzGUouC-8gkHWiMGjwK9v-bUXohaIVKWhedpp"/>
+<img alt="Nebula" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-1"  src="img/base.png"/>
+<img alt="Galaxy" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-2" src="img/base2.png"/>
+<img alt="Spaceship" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-3"  src="img/poder.png"/>
+<img alt="Spaceship2" class="absolute inset-0 w-full h-full object-cover cycle-image image-layer-4"  src="img/poder2.png"/>
 <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
 <span class="font-label-caps text-[10px] text-primary tracking-widest">LIVE TRANSMISSION: SECTOR 01</span>
 </div>
