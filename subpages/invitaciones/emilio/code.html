@@ -152,6 +152,17 @@
             z-index: 60;
             animation: marioWalk 12s linear infinite;
         }
+        .interactive-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px; /* Cambiado a la derecha */
+            width: 120px; /* 300% más grande (aprox 120px-150px) */
+            height: auto;
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.2s;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="font-body-md">
@@ -168,17 +179,16 @@
                     src="img/logo.png"/>
             </div>
             <h2 class="font-headline-md text-2xl text-primary mb-unit leading-tight tracking-widest text-center uppercase">
-                SABADO 23 DE MAYO
+                SABADO 23 DE MAYO - 3:30 PM
             </h2>
             <div class="h-1 w-24 bg-primary-container mx-auto rounded-full"></div>
         </section>
 
         <section class="px-gutter space-y-stack-lg py-stack-lg overflow-hidden">
-            <div class="glass-panel p-stack-sm rounded-xl">
-                <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed italic text-center">
-                    "The stars are not the limit, they are just the beginning of our journey into the infinite."
-                </p>
-            </div>
+    <!-- Botón interactivo (Imagen grande a la derecha) -->
+    <div class="interactive-trigger" onclick="spawnEmojis(event)">
+        <img src="img/emiliomario.png" alt="Mushroom Trigger" class="w-full h-auto drop-shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+    </div>
 
             <div class="relative h-[400px] w-full flex items-center justify-center">
                 <div class="absolute inset-0 z-0">
