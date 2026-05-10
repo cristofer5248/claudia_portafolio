@@ -242,31 +242,32 @@ body {
     display: grid;
     gap: 6px;
     width: 100%;
-    height: calc(100vh - 240px);
-    max-height: calc(100vh - 240px);
-    margin: 8px auto 0;
+    max-width: calc((100vh - 200px) * 0.75);
+    aspect-ratio: 3 / 4;
+    margin: auto;
     perspective: 1000px;
-    overflow: hidden;
-    grid-auto-rows: minmax(0, 1fr);
 }
 
 .game-board.size-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
 }
 
 .game-board.size-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
 }
 
 .game-board.size-5 {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(5, minmax(0, 1fr));
 }
 
 .card {
     width: 100%;
-    aspect-ratio: 3 / 4;
+    height: 100%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
+    border: 2px solid transparent;
     border-radius: 10px;
     cursor: pointer;
     font-size: clamp(1.2em, 3vw, 2.2em);
@@ -276,13 +277,17 @@ body {
     transition: all 0.3s ease;
     position: relative;
     transform-style: preserve-3d;
+    overflow: hidden;
 }
 
 .card-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 8px;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 .card:hover:not(.flipped):not(.matched) {
     transform: scale(1.05);
@@ -387,7 +392,6 @@ body {
 
     .game-board {
         gap: 6px;
-        max-height: 70vh;
     }
 
     .buttons .btn {

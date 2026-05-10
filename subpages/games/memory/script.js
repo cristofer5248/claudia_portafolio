@@ -37,10 +37,6 @@ class MemoryGame {
         document.querySelectorAll('.difficulty-buttons .btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 this.gridSize = parseInt(e.target.dataset.level);
-                if (this.mode === 'photo' && !this.canStartPhotoGame()) {
-                    alert('Sube suficientes fotos y un fondo antes de comenzar.');
-                    return;
-                }
                 this.startGame();
             });
         });
@@ -63,8 +59,7 @@ class MemoryGame {
     }
 
     canStartPhotoGame() {
-        const pairsNeeded = Math.floor((this.gridSize * this.gridSize) / 2);
-        return this.backgroundImage && this.processedCardFaces.length >= pairsNeeded;
+        return this.backgroundImage && this.processedCardFaces.length >= 1;
     }
 
     handleCardFiles(files) {
@@ -86,6 +81,8 @@ class MemoryGame {
                 this.backgroundImage = img;
                 if (this.uploadedFiles.length > 0) {
                     this.processAllUploadedFiles();
+                } else {
+                    this.updateUploadInfo();
                 }
             };
             img.src = reader.result;
@@ -94,10 +91,7 @@ class MemoryGame {
     }
 
     processAllUploadedFiles() {
-        const pairsNeeded = Math.max(1, Math.ceil((this.gridSize * this.gridSize) / 2));
-        const filesToProcess = this.uploadedFiles.slice(0, pairsNeeded);
-
-        Promise.all(filesToProcess.map(file => this.processImageFile(file)))
+        Promise.all(this.uploadedFiles.map(file => this.processImageFile(file)))
             .then(results => {
                 this.processedCardFaces = results.filter(Boolean);
                 this.updateUploadInfo();
@@ -110,21 +104,30 @@ class MemoryGame {
             reader.onload = () => {
                 const img = new Image();
                 img.onload = () => {
-                    const canvas = document.createElement('canvas');
                     const targetWidth = 360;
                     const targetHeight = 480;
+
+                    const canvas = document.createElement('canvas');
                     canvas.width = targetWidth;
                     canvas.height = targetHeight;
-                    const ctx = canvas.getContext('2d');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-                    if (this.backgroundImage) {
-                        ctx.drawImage(this.backgroundImage, 0, 0, targetWidth, targetHeight);
+                    const imgRatio = img.width / img.height;
+                    const targetRatio = targetWidth / targetHeight;
+                    let drawW = targetWidth;
+                    let drawH = targetHeight;
+                    let drawX = 0;
+                    let drawY = 0;
+
+                    if (imgRatio > targetRatio) {
+                        drawW = targetHeight * imgRatio;
+                        drawX = (targetWidth - drawW) / 2;
                     } else {
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(0, 0, targetWidth, targetHeight);
+                        drawH = targetWidth / imgRatio;
+                        drawY = (targetHeight - drawH) / 2;
                     }
 
-                    ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+                    ctx.drawImage(img, drawX, drawY, drawW, drawH);
                     const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
                     const data = imageData.data;
 
@@ -132,14 +135,41 @@ class MemoryGame {
                         const r = data[i];
                         const g = data[i + 1];
                         const b = data[i + 2];
-                        const isGreen = g > 100 && g > r + 20 && g > b + 20;
+                        const isGreen = g > 90 && g > r * 1.3 && g > b * 1.3;
                         if (isGreen) {
                             data[i + 3] = 0;
                         }
                     }
 
                     ctx.putImageData(imageData, 0, 0);
-                    resolve(canvas.toDataURL('image/png'));
+
+                    const finalCanvas = document.createElement('canvas');
+                    finalCanvas.width = targetWidth;
+                    finalCanvas.height = targetHeight;
+                    const finalCtx = finalCanvas.getContext('2d');
+
+                    if (this.backgroundImage) {
+                        const bgRatio = this.backgroundImage.width / this.backgroundImage.height;
+                        let bgW = targetWidth;
+                        let bgH = targetHeight;
+                        let bgX = 0;
+                        let bgY = 0;
+
+                        if (bgRatio > targetRatio) {
+                            bgW = targetHeight * bgRatio;
+                            bgX = (targetWidth - bgW) / 2;
+                        } else {
+                            bgH = targetWidth / bgRatio;
+                            bgY = (targetHeight - bgH) / 2;
+                        }
+                        finalCtx.drawImage(this.backgroundImage, bgX, bgY, bgW, bgH);
+                    } else {
+                        finalCtx.fillStyle = '#ffffff';
+                        finalCtx.fillRect(0, 0, targetWidth, targetHeight);
+                    }
+
+                    finalCtx.drawImage(canvas, 0, 0);
+                    resolve(finalCanvas.toDataURL('image/jpeg', 0.9));
                 };
                 img.src = reader.result;
             };
@@ -149,9 +179,9 @@ class MemoryGame {
 
     updateUploadInfo() {
         const info = document.getElementById('uploadedInfo');
-        const count = this.processedCardFaces.length;
+        const count = this.processedCardFaces.length || this.uploadedFiles.length;
         const bgText = this.backgroundImage ? 'Fondo listo' : 'Sin fondo';
-        info.textContent = `${count} imagen(es) listas · ${bgText}`;
+        info.textContent = `${count} imagen(es) seleccionadas · ${bgText}`;
     }
 
     startGame() {
@@ -165,7 +195,7 @@ class MemoryGame {
         this.totalPairs = Math.floor((this.gridSize * this.gridSize) / 2);
 
         if (this.mode === 'photo' && !this.canStartPhotoGame()) {
-            alert('Necesitas subir suficientes fotos y un fondo antes de iniciar.');
+            alert('Sube al menos 1 foto y un fondo antes de comenzar.');
             return;
         }
 
@@ -182,7 +212,8 @@ class MemoryGame {
 
         if (this.mode === 'photo') {
             for (let i = 0; i < pairsNeeded; i++) {
-                selected.push(this.processedCardFaces[i], this.processedCardFaces[i]);
+                const face = this.processedCardFaces[i % this.processedCardFaces.length];
+                selected.push(face, face);
             }
         } else {
             for (let i = 0; i < pairsNeeded; i++) {
@@ -207,7 +238,7 @@ class MemoryGame {
             const card = document.createElement('button');
             card.className = 'card';
             card.dataset.index = index;
-            card.dataset.faceType = typeof face === 'string' ? 'emoji' : 'photo';
+            card.dataset.faceType = (face && face.startsWith('data:image')) ? 'photo' : 'emoji';
             card.textContent = '';
 
             card.addEventListener('click', () => this.flipCard(index));
@@ -227,13 +258,13 @@ class MemoryGame {
             return;
         }
 
-        if (typeof face === 'string') {
-            card.textContent = face;
-        } else {
+        if (face.startsWith('data:image')) {
             const img = document.createElement('img');
             img.className = 'card-image';
             img.src = face;
             card.appendChild(img);
+        } else {
+            card.textContent = face;
         }
     }
 
@@ -278,9 +309,7 @@ class MemoryGame {
         const firstFace = this.cards[first];
         const secondFace = this.cards[second];
 
-        const isMatch = typeof firstFace === 'string'
-            ? firstFace === secondFace
-            : firstFace === secondFace;
+        const isMatch = firstFace === secondFace;
 
         if (isMatch) {
             setTimeout(() => {
