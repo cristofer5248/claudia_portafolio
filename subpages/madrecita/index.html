@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Dia de la Madre 08 de Marzo</title>
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+      .gift-box {
+        background-color: #ff6b81;
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: transform 0.3s ease;
+        width: 48%;
+        box-sizing: border-box;
+      }
+      .gift-box:hover {
+        transform: scale(1.05);
+      }
+      .gift-box.opened {
+        cursor: default;
+        transform: none;
+        width: 100%;
+      }
+    </style>
+  </head>
+    
+  <body>
+  <div class="card" onclick="toggleCard(this)">
+  <div class="front">
+    <h1>Feliz Día Mamá</h1>
+  </div>
+  <div class="inside">
+    <div class="message">
+      Gracias por tu amor y regañadas,<br>
+      tu paciencia eterna y tu apoyo incondicional.<br>
+      ¡Eres la mejor mamá y abuela del mundo!<br><br>
+      Con mucho amor,<br>
+      Tus hijos y las nietas❤️
+    </div>
+    
+    <div id="gift-section" style="display:none; text-align:center; margin-top: 15px;">
+      <p style="font-weight:bold; color:#e91e63; font-size: 14px; margin-bottom: 5px;">¡Te has ganado un premio! Elige un regalo:</p>
+      <div style="display:flex; justify-content:space-between; margin-top:10px;">
+        <div class="gift-box" onclick="selectGift(this, event)">🎁 Regalo 1</div>
+        <div class="gift-box" onclick="selectGift(this, event)">🎁 Regalo 2</div>
+        <div class="gift-box" onclick="selectGift(this, event)">🎁 Regalo 3</div>
+      </div>
+    </div>
+
+    <div id="redeem-section" style="display:none; text-align:center; margin-top: 15px;">
+      <a id="wa-btn" href="#" target="_blank" onclick="event.stopPropagation()" style="background-color:#25D366; color:white; padding:10px 15px; text-decoration:none; border-radius:5px; font-weight:bold; display:inline-block; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);">¡Canjear premio!</a>
+    </div>
+
+    <footer>
+      <p>Hecho con ❤️ para mamá</p>
+    </footer>
+  </div>
+</div>
+    
+<script>
+  let giftsShown = false;
+  let prizeWon = "";
+  let prizes = [
+    "Unos periquitos 🦜",
+    "Regalo de siman a elegir 🎁",
+    "un abrazo y 10 pesos"
+  ];
+
+  function toggleCard(card) {
+    card.classList.toggle('open');
+    if (card.classList.contains('open') && !giftsShown) {
+      giftsShown = true;
+      setTimeout(() => {
+        document.getElementById("gift-section").style.display = "block";
+      }, 3000); // Muestra los regalos a los 3 segundos de haber abierto la carta
+    }
+  }
+
+  function selectGift(element, event) {
+    event.stopPropagation(); // Evita que se cierre la carta al darle click a un regalo
+    if (prizeWon !== "") return; 
+    
+    // Mezcla los premios de manera aleatoria y elige el primero
+    prizes = prizes.sort(() => Math.random() - 0.5);
+    prizeWon = prizes[0];
+    
+    // Muestra el premio en la caja y cambia sus estilos
+    element.innerHTML = "🎉 " + prizeWon + " 🎉";
+    element.classList.add("opened");
+    element.style.backgroundColor = "#fff3cd";
+    element.style.color = "#d39e00";
+    element.style.border = "2px solid #ffeeba";
+    
+    // Oculta la caja que no se eligió
+    let boxes = document.querySelectorAll('.gift-box');
+    boxes.forEach(box => {
+      if (box !== element) {
+        box.style.display = 'none';
+      }
+    });
+
+    // Muestra el botón de WhatsApp
+    document.getElementById("redeem-section").style.display = "block";
+    
+    // Genera el enlace de WhatsApp con el mensaje exacto
+    let mensaje = "quiero canjear mi regalo " + prizeWon;
+    let waLink = "https://wa.me/50373519858?text=" + encodeURIComponent(mensaje);
+    document.getElementById("wa-btn").href = waLink;
+  }
+</script>
+  </body>
+  
+</html>
